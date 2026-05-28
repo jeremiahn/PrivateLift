@@ -4,5 +4,5 @@
 
 100.103.46.112, 192.168.50.70 {
     tls internal
-    reverse_proxy web:666
+    reverse_proxy web:8000
 }
