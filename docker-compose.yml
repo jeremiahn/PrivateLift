@@ -11,13 +11,12 @@ services:
     image: caddy:latest
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"   # The side door for Staging!
+      # - "443:443" # Commented out to prevent conflicts with Production SSL
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-      # Caddy needs access to the static files to serve them
       - .:/app 
     depends_on:
       - web
