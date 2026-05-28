@@ -1,19 +1,40 @@
-<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg mt-2 border border-gray-700 animate-pulse">
-    <div class="flex flex-col">
-        <span class="text-gray-300 font-bold text-lg">{{ set.weight }} lbs <span class="text-gray-500 font-normal text-sm">x {{ set.reps }}</span></span>
-        <span class="text-blue-400 text-xs font-semibold tracking-wide">e1RM: {{ set.e1rm }} lbs</span>
-    </div>
-    <span class="text-green-500 font-bold text-xl">✓</span>
-</div>
+<div id="empty-state-placeholder" hx-swap-oob="delete"></div>
 
-<div class="flex justify-between items-center bg-gray-700 p-3 rounded mb-2">
-    <div>
-        <span class="font-bold text-white">{{ set.weight }} lbs x {{ set.reps }}</span>
-        
-        {% if set.set_type == 'warmup' %}
-            <span class="ml-2 text-xs font-bold text-gray-400 uppercase">Warm Up</span>
-        {% elif set.set_type == 'failure' %}
-            <span class="ml-2 text-xs font-bold text-red-400 uppercase">Failure</span>
-        {% endif %}
+<div id="set-row-{{ set.id }}" class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+    <div class="flex items-center gap-4">
+        <div class="w-2 h-10 rounded-full 
+            {% if 'SQUAT' in set.exercise|upper %}bg-red-500
+            {% elif 'BENCH' in set.exercise|upper %}bg-blue-500
+            {% elif 'DEAD' in set.exercise|upper %}bg-green-500
+            {% else %}bg-gray-400{% endif %}">
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ set.exercise }}</h4>
+            <p class="text-[10px] text-gray-500 font-bold uppercase">{{ set.set_type|default:"Working Set" }}</p>
+        </div>
+    </div>
+    
+    <div class="flex gap-4 items-center">
+        <div class="text-center">
+            <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.weight }}</span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase">lbs</span>
+        </div>
+        <div class="text-center">
+            <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase">reps</span>
+        </div>
+
+        <button 
+            hx-delete="{% url 'delete_set' set.id %}"
+            hx-target="#set-row-{{ set.id }}"
+            hx-swap="outerHTML"
+            hx-confirm="Delete this set?"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            class="ml-2 p-2 text-gray-400 hover:text-red-500 transition-colors"
+            title="Delete Set">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
 </div>

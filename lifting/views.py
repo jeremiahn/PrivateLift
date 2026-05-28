@@ -18,7 +18,19 @@ def dashboard(request):
         percentage = 0.85
         p_val = 85
     working_weights = profile.get_weekly_program(percentage)
-    context = {'profile': profile, 'weights': working_weights, 'current_p': int(p_val)}
+
+    # Fetch today's sets and order them newest-first to match your HTMX layout
+    todays_sets = WorkoutSet.objects.filter(
+        session__user=request.user, 
+        session__date=date.today()
+    ).order_by('-id')
+
+    context = {
+        'profile': profile, 
+        'weights': working_weights, 
+        'current_p': int(p_val),
+        'todays_sets': todays_sets
+    }
     return render(request, 'lifting/dashboard.html', context)
 
 @login_required

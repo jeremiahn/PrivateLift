@@ -145,55 +145,56 @@
             <span class="text-gray-400 dark:text-gray-500 text-xs font-bold tracking-widest">{{ today|date:"M j, Y" }}</span>
         </div>
         
-        <div id="set-list" class="space-y-4">
-    {% for set in todays_sets %}
-        <!-- Unique ID ensures HTMX knows exactly which card to remove -->
-        <div id="set-row-{{ set.id }}" class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
-            <div class="flex items-center gap-4">
-                <!-- Color Indicator -->
-                <div class="w-2 h-10 rounded-full 
-                    {% if 'SQUAT' in set.exercise|upper %}bg-red-500
-                    {% elif 'BENCH' in set.exercise|upper %}bg-blue-500
-                    {% elif 'DEAD' in set.exercise|upper %}bg-green-500
-                    {% else %}bg-gray-400{% endif %}">
-                </div>
-                <div>
-                    <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ set.exercise }}</h4>
-                    <p class="text-[10px] text-gray-500 font-bold uppercase">{{ set.set_type|default:"Working Set" }}</p>
-                </div>
-            </div>
+        <div id="set-list" class="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-4 min-h-[200px] flex flex-col gap-4 transition-all">
             
-            <div class="flex gap-4 items-center">
-                <div class="text-center">
-                    <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.weight }}</span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase">lbs</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>
-                    <span class="text-[8px] text-gray-400 font-bold uppercase">reps</span>
-                </div>
+            {% for set in todays_sets %}
+                <div id="empty-state-placeholder" hx-swap-oob="delete"></div>
 
-                <!-- HTMX Delete Button -->
-                <button 
-                    hx-delete="{% url 'delete_set' set.id %}"
-                    hx-target="#set-row-{{ set.id }}"
-                    hx-swap="outerHTML"
-                    hx-confirm="Delete this set?"
-                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                    class="ml-2 p-2 text-gray-400 hover:text-red-500 transition-colors"
-                    title="Delete Set">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                	</button>
-            	</div>
-        	</div>
-    	{% empty %}
-        <div id="no-sets" class="bg-gray-200/30 dark:bg-gray-800/30 border-2 border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-16 text-center">
-            <p class="text-gray-400 dark:text-gray-600 italic text-sm">No sets logged yet today.</p>
-        		</div>
-    		{% endfor %}
-	    </div>
+                <div id="set-row-{{ set.id }}" class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-10 rounded-full 
+                            {% if 'SQUAT' in set.exercise|upper %}bg-red-500
+                            {% elif 'BENCH' in set.exercise|upper %}bg-blue-500
+                            {% elif 'DEAD' in set.exercise|upper %}bg-green-500
+                            {% else %}bg-gray-400{% endif %}">
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ set.exercise }}</h4>
+                            <p class="text-[10px] text-gray-500 font-bold uppercase">{{ set.set_type|default:"Working Set" }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 items-center">
+                        <div class="text-center">
+                            <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.weight }}</span>
+                            <span class="text-[8px] text-gray-400 font-bold uppercase">lbs</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>
+                            <span class="text-[8px] text-gray-400 font-bold uppercase">reps</span>
+                        </div>
+
+                        <button 
+                            hx-delete="{% url 'delete_set' set.id %}"
+                            hx-target="#set-row-{{ set.id }}"
+                            hx-swap="outerHTML"
+                            hx-confirm="Delete this set?"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                            class="ml-2 p-2 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Delete Set">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <div id="empty-state-placeholder" class="w-full py-12 text-center">
+                    <p class="text-gray-400 dark:text-gray-600 italic text-sm">No sets logged yet today.</p>
+                </div>
+            {% endfor %}
+            
+        </div>
     </div>
 </div>
 {% endblock %}
