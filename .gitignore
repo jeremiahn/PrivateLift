@@ -1,0 +1,9 @@
+# Ignore Environment Secrets
+.env
+
+# Ignore your personal Database
+db.sqlite3
+
+# Ignore Python Cache (Keeps the repo clean)
+__pycache__/
+*.pyc

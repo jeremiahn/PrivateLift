@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:666 --workers 3
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      # Caddy needs access to the static CSS files to serve them
+      - .:/app 
+    depends_on:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:

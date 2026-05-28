@@ -1,0 +1,149 @@
+{% extends 'lifting/base.html' %}
+
+{% block title %}Dashboard | PrivateLift{% endblock %}
+
+{% block content %}
+<!-- Custom CSS for Large Mobile-Friendly Slider Thumb -->
+<style>
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 28px;
+        height: 28px;
+        background: #3b82f6; 
+        cursor: pointer;
+        border-radius: 50%;
+        border: 3px solid #1f2937;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    input[type=range]::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+        background: #3b82f6;
+        cursor: pointer;
+        border-radius: 50%;
+        border: 3px solid #1f2937;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<!-- 1. PROGRAMMING CONTROLS (HTMX Container) -->
+<div id="weekly-program-container" class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 mb-10">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-700 pb-6 mb-6">
+        <div>
+            <h2 class="text-xl font-black text-white uppercase tracking-tight">Weekly Program</h2>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">
+                Intensity: <span id="intensity-sub" class="text-blue-400">{{ current_p }}%</span> of 1RM
+            </p>
+        </div>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto px-2">
+            <!-- HTMX targets the OUTER container to preserve grid scaling -->
+            <input type="range" 
+                   name="p" 
+                   min="50" 
+                   max="100" 
+                   step="5" 
+                   value="{{ current_p }}" 
+                   class="w-full md:w-56 h-3 bg-gray-900 rounded-lg appearance-none cursor-pointer"
+                   hx-get="{% url 'dashboard' %}" 
+                   hx-target="#weekly-program-container" 
+                   hx-select="#weekly-program-container"
+                   hx-trigger="change"
+                   hx-swap="outerHTML"
+                   oninput="const val = this.value + '%'; document.getElementById('intensity-sub').innerText = val; document.getElementById('intensity-large').innerText = val;">
+            
+            <div class="w-16 text-right">
+                <span id="intensity-large" class="text-blue-400 font-black text-xl">{{ current_p }}%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- This grid is inside the swap zone, so it re-renders fresh every time -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        {% for exercise, weight in weights.items %}
+            <div class="bg-gray-900 p-5 rounded-xl border border-gray-700 border-t-4 
+                {% if 'SQUAT' in exercise|upper %}border-red-500
+                {% elif 'BENCH' in exercise|upper %}border-blue-500
+                {% elif 'DEAD' in exercise|upper %}border-green-500
+                {% else %}border-gray-500{% endif %}">
+                
+                <span class="text-[10px] font-black uppercase tracking-widest block mb-1
+                    {% if 'SQUAT' in exercise|upper %}text-red-500
+                    {% elif 'BENCH' in exercise|upper %}text-blue-500
+                    {% elif 'DEAD' in exercise|upper %}text-green-500
+                    {% else %}text-gray-500{% endif %}">
+                    {{ exercise }}
+                </span>
+                
+                <div class="flex items-baseline gap-1">
+                    <span class="text-3xl font-black text-white">{{ weight }}</span>
+                    <span class="text-xs text-gray-600 font-bold uppercase ml-1">lbs</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+    
+    <div class="lg:col-span-1">
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 sticky top-8">
+            <h3 class="text-lg font-bold text-white mb-6 uppercase tracking-tight border-b border-gray-700 pb-2">Log New Set</h3>
+            <form hx-post="{% url 'log_set' %}" hx-target="#set-list" hx-swap="afterbegin" class="space-y-5">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Exercise</label>
+                    <select name="exercise" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                        <option value="SQUAT">Squat</option>
+                        <option value="BENCH">Bench Press</option>
+                        <option value="DEADLIFT">Deadlift</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Weight</label>
+                        <input type="number" name="weight" required class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Reps</label>
+                        <input type="number" name="reps" required class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-2">Set Type</label>
+                    <select name="set_type" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                        <option value="working">Working Set</option>
+                        <option value="warmup">Warm Up</option>
+                        <option value="failure">To Failure</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition duration-300 shadow-lg shadow-blue-900/40 uppercase tracking-widest text-xs mt-4">
+                    Log Set
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="lg:col-span-2">
+        <div class="flex justify-between items-baseline mb-6">
+            <h3 class="text-xl font-black text-white uppercase tracking-tight">Today's Session</h3>
+            <span class="text-gray-500 text-xs font-bold tracking-widest">{{ today|date:"M j, Y" }}</span>
+        </div>
+        
+        <div id="set-list" class="space-y-4">
+            {% for set in todays_sets %}
+                {% include 'lifting/partials/set_row.html' %}
+            {% empty %}
+                <div id="no-sets" class="bg-gray-800/30 border-2 border-dashed border-gray-800 rounded-2xl p-16 text-center">
+                    <p class="text-gray-600 italic text-sm">No sets logged yet today.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

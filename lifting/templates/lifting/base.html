@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PrivateLift{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
+
+    <div class="h-1.5 bg-gradient-to-r from-red-500 via-blue-500 to-green-500 w-full"></div>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        <header class="flex flex-col md:flex-row justify-between items-center bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg mb-8 gap-6 transition-colors">
+            <div class="text-center md:text-left">
+                <a href="{% url 'dashboard' %}" class="text-2xl font-black text-gray-900 dark:text-white tracking-tight hover:text-blue-500 transition">
+                    PRIVATE<span class="text-blue-500">LIFT</span>
+                </a>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mt-0.5 uppercase tracking-wider">Platform Performance Tracking</p>
+            </div>
+            
+            {% if request.user.is_authenticated %}
+            <nav class="grid grid-cols-3 sm:flex sm:flex-wrap items-center justify-center gap-2 w-full md:w-auto">
+                <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50 block">
+                    Analytics
+                </a>
+                <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50 block">
+                    History
+                </a>
+                <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50 block">
+                    Settings
+                </a>
+
+                <a href="{% url 'dashboard' %}" class="col-span-2 sm:inline bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-3 md:px-4 rounded-lg transition border border-blue-500 block shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
+                    Dashboard
+                </a>
+                
+                <form action="{% url 'logout' %}" method="post" class="col-span-1 sm:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full bg-red-50 dark:bg-red-900/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-600 dark:text-red-200 text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition border border-red-200 dark:border-red-800/60 block">
+                        Logout
+                    </button>
+                </form>
+            </nav>
+            {% endif %}
+        </header>
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

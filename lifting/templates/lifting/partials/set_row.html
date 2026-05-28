@@ -1,0 +1,19 @@
+<div class="flex justify-between items-center bg-gray-900 p-3 rounded-lg mt-2 border border-gray-700 animate-pulse">
+    <div class="flex flex-col">
+        <span class="text-gray-300 font-bold text-lg">{{ set.weight }} lbs <span class="text-gray-500 font-normal text-sm">x {{ set.reps }}</span></span>
+        <span class="text-blue-400 text-xs font-semibold tracking-wide">e1RM: {{ set.e1rm }} lbs</span>
+    </div>
+    <span class="text-green-500 font-bold text-xl">✓</span>
+</div>
+
+<div class="flex justify-between items-center bg-gray-700 p-3 rounded mb-2">
+    <div>
+        <span class="font-bold text-white">{{ set.weight }} lbs x {{ set.reps }}</span>
+        
+        {% if set.set_type == 'warmup' %}
+            <span class="ml-2 text-xs font-bold text-gray-400 uppercase">Warm Up</span>
+        {% elif set.set_type == 'failure' %}
+            <span class="ml-2 text-xs font-bold text-red-400 uppercase">Failure</span>
+        {% endif %}
+    </div>
+</div>

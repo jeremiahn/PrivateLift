@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Powerlifting Platform{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen pb-24" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
+    <div class="w-full h-3 bg-gradient-to-r from-red-600 via-blue-600 to-green-600 shadow-lg mb-8"></div>
+
+    <main class="max-w-4xl mx-auto px-4">
+        <header class="flex flex-col md:flex-row justify-between items-center bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg mb-8 gap-6">
+    <div class="text-center md:text-left">
+        <a href="{% url 'dashboard' %}" class="text-2xl font-black text-white tracking-tight hover:text-blue-400 transition">
+            PRIVATE<span class="text-blue-500">LIFT</span>
+        </a>
+        <p class="text-xs text-gray-400 font-semibold mt-0.5 uppercase tracking-wider">Platform Performance Tracking</p>
+    </div>
+    
+    {% if request.user.is_authenticated %}
+    <nav class="grid grid-cols-3 sm:flex sm:flex-wrap items-center justify-center gap-2 w-full md:w-auto">
+        <a href="{% url 'analytics' %}" class="bg-gray-700 hover:bg-gray-600 text-white text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition duration-200 border border-gray-600/50 block">
+            Analytics
+        </a>
+        <a href="{% url 'history' %}" class="bg-gray-700 hover:bg-gray-600 text-white text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition duration-200 border border-gray-600/50 block">
+            History
+        </a>
+        <a href="{% url 'profile_settings' %}" class="bg-gray-700 hover:bg-gray-600 text-white text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition duration-200 border border-gray-600/50 block">
+            Settings
+        </a>
+
+        <a href="{% url 'dashboard' %}" class="col-span-2 sm:inline bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-3 md:px-4 rounded-lg transition duration-200 border border-blue-500 block shadow-md shadow-blue-900/20">
+            Dashboard
+        </a>
+        
+        <form action="{% url 'logout' %}" method="post" class="col-span-1 sm:inline">
+            {% csrf_token %}
+            <button type="submit" class="w-full bg-red-900/40 hover:bg-red-900/60 text-red-200 text-center text-xs font-bold py-2.5 px-3 md:px-4 rounded-lg transition duration-200 border border-red-800/60 block">
+                Logout
+            </button>
+        </form>
+    </nav>
+    {% endif %}
+</header>
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

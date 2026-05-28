@@ -1,0 +1,24 @@
+<!-- lifting/partials/weight_grid.html -->
+<div id="weight-cards-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    {% for exercise, weight in weights.items %}
+        <div class="bg-gray-900 p-5 rounded-xl border border-gray-700 border-t-4 
+            {% if 'SQUAT' in exercise|upper %}border-red-500
+            {% elif 'BENCH' in exercise|upper %}border-blue-500
+            {% elif 'DEAD' in exercise|upper %}border-green-500
+            {% else %}border-gray-500{% endif %}">
+            
+            <span class="text-[10px] font-black uppercase tracking-widest block mb-1
+                {% if 'SQUAT' in exercise|upper %}text-red-500
+                {% elif 'BENCH' in exercise|upper %}text-blue-500
+                {% elif 'DEAD' in exercise|upper %}text-green-500
+                {% else %}text-gray-500{% endif %}">
+                {{ exercise }}
+            </span>
+            
+            <div class="flex items-baseline gap-1">
+                <span class="text-3xl font-black text-white">{{ weight }}</span>
+                <span class="text-xs text-gray-600 font-bold uppercase ml-1">lbs</span>
+            </div>
+        </div>
+    {% endfor %}
+</div>
