@@ -3,81 +3,99 @@
 {% block title %}Training Analytics | PrivateLift{% endblock %}
 
 {% block content %}
-<h2 class="text-xl font-bold text-white mb-6">Lifetime Totals</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-red-500">
-        <h3 class="text-xl font-bold text-white mb-4">SQUAT</h3>
-        <p class="text-gray-400 text-sm">Total Volume:</p>
-        <p class="text-red-400 font-black text-2xl mb-2">{{ tonnage.SQUAT|default:0 }} lbs</p>
-        <p class="text-gray-400 text-sm">Total Reps:</p>
-        <p class="text-green-400 font-black text-2xl">{{ total_reps.SQUAT|default:0 }}</p>
+<h2 class="text-xl font-black text-white mb-6 uppercase tracking-tight">Lifetime Totals</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-10">
+    <div class="bg-gray-800 p-5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-red-500">
+        <h3 class="text-lg md:text-xl font-black text-white mb-3 tracking-tight border-b border-gray-700/50 pb-1.5">SQUAT</h3>
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Total Volume</p>
+                <p class="text-red-400 font-black text-lg md:text-2xl leading-none">{{ tonnage.SQUAT|default:0 }} lbs</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Total Reps</p>
+                <p class="text-green-400 font-black text-lg md:text-2xl leading-none">{{ total_reps.SQUAT|default:0 }}</p>
+            </div>
+        </div>
     </div>
 
-    <div class="bg-gray-800 p-6 rounded-xl border border-blue-500 shadow-lg border-t-4">
-        <h3 class="text-xl font-bold text-white mb-4">BENCH</h3>
-        <p class="text-gray-400 text-sm">Total Volume:</p>
-        <p class="text-blue-400 font-black text-2xl mb-2">{{ tonnage.BENCH|default:0 }} lbs</p>
-        <p class="text-gray-400 text-sm">Total Reps:</p>
-        <p class="text-green-400 font-black text-2xl">{{ total_reps.BENCH|default:0 }}</p>
+    <div class="bg-gray-800 p-5 md:p-6 rounded-xl border border-blue-500 shadow-lg border-t-4">
+        <h3 class="text-lg md:text-xl font-black text-white mb-3 tracking-tight border-b border-gray-700/50 pb-1.5">BENCH</h3>
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Total Volume</p>
+                <p class="text-blue-400 font-black text-lg md:text-2xl leading-none">{{ tonnage.BENCH|default:0 }} lbs</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Total Reps</p>
+                <p class="text-green-400 font-black text-lg md:text-2xl leading-none">{{ total_reps.BENCH|default:0 }}</p>
+            </div>
+        </div>
     </div>
 
-    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-green-500">
-        <h3 class="text-xl font-bold text-white mb-4">DEADLIFT</h3>
-        <p class="text-gray-400 text-sm">Total Volume:</p>
-        <p class="text-green-400 font-black text-2xl mb-2">{{ tonnage.DEADLIFT|default:0 }} lbs</p>
-        <p class="text-gray-400 text-sm">Total Reps:</p>
-        <p class="text-green-400 font-black text-2xl">{{ total_reps.DEADLIFT|default:0 }}</p>
+    <div class="bg-gray-800 p-5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-green-500">
+        <h3 class="text-lg md:text-xl font-black text-white mb-3 tracking-tight border-b border-gray-700/50 pb-1.5">DEADLIFT</h3>
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Total Volume</p>
+                <p class="text-green-400 font-black text-lg md:text-2xl leading-none">{{ tonnage.DEADLIFT|default:0 }} lbs</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Total Reps</p>
+                <p class="text-green-400 font-black text-lg md:text-2xl leading-none">{{ total_reps.DEADLIFT|default:0 }}</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<hr class="border-gray-700/50 mb-10">
+<hr class="border-gray-700/50 mb-6 md:mb-10">
 
-<div class="space-y-6">
-    <h2 class="text-xl font-bold text-white">Weekly Volume Breakdown</h2>
+<div class="space-y-4 md:space-y-6">
+    <h2 class="text-xl font-black text-white uppercase tracking-tight">Weekly Volume Breakdown</h2>
     
     {% for week, lifts in weekly_breakdown.items %}
-        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
-            <div class="text-gray-400 text-sm font-bold uppercase tracking-wider mb-4 border-b border-gray-700/50 pb-2">
+        <div class="bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-700 shadow-lg">
+            <div class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-4 border-b border-gray-700/50 pb-2">
                 Week of {{ week|date:"M j, Y" }}
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 border-t-4 border-red-500 flex justify-between items-center">
+                <div class="bg-gray-900 p-4 rounded-xl border-l-4 border-red-500 flex justify-between items-center">
                     <div>
-                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Squat</span>
-                        <span class="text-red-400 font-black text-xl block mt-1">{{ lifts.SQUAT.tonnage|default:0 }} <span class="text-xs font-normal text-gray-500">lbs</span></span>
+                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Squat Volume</span>
+                        <span class="text-red-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.SQUAT.tonnage|default:0 }} lbs</span>
                     </div>
                     <div class="text-right">
-                        <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider">Total Reps</span>
-                        <span class="text-green-400 font-black text-lg block mt-0.5">{{ lifts.SQUAT.reps|default:0 }}</span>
+                        <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
+                        <span class="text-green-400 font-black text-base md:text-lg block">{{ lifts.SQUAT.reps|default:0 }}</span>
                     </div>
                 </div>
                 
-                <div class="bg-gray-900 p-4 rounded-xl border border-blue-500 border-t-4 flex justify-between items-center">
+                <div class="bg-gray-900 p-4 rounded-xl border-l-4 border-blue-500 flex justify-between items-center">
                     <div>
-                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Bench</span>
-                        <span class="text-blue-400 font-black text-xl block mt-1">{{ lifts.BENCH.tonnage|default:0 }} <span class="text-xs font-normal text-gray-500">lbs</span></span>
+                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Bench Volume</span>
+                        <span class="text-blue-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.BENCH.tonnage|default:0 }} lbs</span>
                     </div>
                     <div class="text-right">
-                        <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider">Total Reps</span>
-                        <span class="text-green-400 font-black text-lg block mt-0.5">{{ lifts.BENCH.reps|default:0 }}</span>
+                        <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
+                        <span class="text-green-400 font-black text-base md:text-lg block">{{ lifts.BENCH.reps|default:0 }}</span>
                     </div>
                 </div>
                 
-                <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 border-t-4 border-green-500 flex justify-between items-center">
+                <div class="bg-gray-900 p-4 rounded-xl border-l-4 border-green-500 flex justify-between items-center">
                     <div>
-                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Deadlift</span>
-                        <span class="text-green-400 font-black text-xl block mt-1">{{ lifts.DEADLIFT.tonnage|default:0 }} <span class="text-xs font-normal text-gray-500">lbs</span></span>
+                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Deadlift Volume</span>
+                        <span class="text-green-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.DEADLIFT.tonnage|default:0 }} lbs</span>
                     </div>
                     <div class="text-right">
-                        <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider">Total Reps</span>
-                        <span class="text-green-400 font-black text-lg block mt-0.5">{{ lifts.DEADLIFT.reps|default:0 }}</span>
+                        <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
+                        <span class="text-green-400 font-black text-base md:text-lg block">{{ lifts.DEADLIFT.reps|default:0 }}</span>
                     </div>
                 </div>
             </div>
         </div>
     {% empty %}
-        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 text-center text-gray-500 italic">
+        <div class="bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-700 text-center text-gray-500 italic text-sm">
             No weekly data available yet.
         </div>
     {% endfor %}

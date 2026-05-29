@@ -40,11 +40,11 @@
     }
 </style>
 
-<div id="weekly-program-container" class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700 mb-10 transition-colors">
-    <div class="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-gray-100 dark:border-gray-700 pb-6 mb-6">
-        <div>
-            <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Weekly Program</h2>
-            <p class="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">
+<div id="weekly-program-container" class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700 mb-4 md:mb-10 transition-colors">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-6 border-b border-gray-100 dark:border-gray-700 pb-4 md:pb-6 mb-4 md:mb-6">
+        <div class="text-center md:text-left">
+            <h2 class="text-lg md:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Weekly Program</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mt-0.5">
                 Intensity: <span id="intensity-sub" class="text-blue-600 dark:text-blue-400">{{ current_p }}%</span> of 1RM
             </p>
         </div>
@@ -65,20 +65,20 @@
                    oninput="const val = this.value + '%'; document.getElementById('intensity-sub').innerText = val; document.getElementById('intensity-large').innerText = val;">
             
             <div class="w-16 text-right">
-                <span id="intensity-large" class="text-blue-600 dark:text-blue-400 font-black text-xl">{{ current_p }}%</span>
+                <span id="intensity-large" class="text-blue-600 dark:text-blue-400 font-black text-lg md:text-xl">{{ current_p }}%</span>
             </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+    <div class="grid grid-cols-3 gap-2 md:gap-6 w-full">
         {% for exercise, weight in weights.items %}
-            <div class="bg-gray-50 dark:bg-gray-900 p-5 rounded-xl border border-gray-200 dark:border-gray-700 border-t-4 
+            <div class="bg-gray-50 dark:bg-gray-900 p-2 md:p-5 rounded-lg md:rounded-xl border border-gray-200 dark:border-gray-700 border-t-[3px] md:border-t-4 
                 {% if 'SQUAT' in exercise|upper %}border-red-500
                 {% elif 'BENCH' in exercise|upper %}border-blue-500
                 {% elif 'DEAD' in exercise|upper %}border-green-500
                 {% else %}border-gray-500{% endif %}">
                 
-                <span class="text-[10px] font-black uppercase tracking-widest block mb-1
+                <span class="text-[8px] md:text-[10px] font-black uppercase tracking-wider block mb-0.5
                     {% if 'SQUAT' in exercise|upper %}text-red-500
                     {% elif 'BENCH' in exercise|upper %}text-blue-500
                     {% elif 'DEAD' in exercise|upper %}text-green-500
@@ -86,53 +86,53 @@
                     {{ exercise }}
                 </span>
                 
-                <div class="flex items-baseline gap-1">
-                    <span class="text-3xl font-black text-gray-900 dark:text-white">{{ weight }}</span>
-                    <span class="text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-1">lbs</span>
+                <div class="flex items-baseline gap-0.5 md:gap-1">
+                    <span class="text-base sm:text-xl md:text-3xl font-black text-gray-900 dark:text-white leading-none">{{ weight }}</span>
+                    <span class="text-[8px] md:text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-0.5 md:ml-1">lbs</span>
                 </div>
             </div>
         {% endfor %}
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-10 items-start">
     
     <div class="lg:col-span-1">
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700 sticky top-8">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-tight border-b border-gray-100 dark:border-gray-700 pb-2">Log New Set</h3>
-            <form hx-post="{% url 'log_set' %}" hx-target="#set-list" hx-swap="afterbegin" class="space-y-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700 md:sticky md:top-8">
+            <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-4 md:mb-6 uppercase tracking-tight border-b border-gray-100 dark:border-gray-700 pb-2">Log New Set</h3>
+            <form hx-post="{% url 'log_set' %}" hx-target="#set-list" hx-swap="afterbegin" class="space-y-4 md:space-y-5">
                 {% csrf_token %}
                 
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-2">Exercise</label>
-                    <select name="exercise" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-gray-900 dark:text-white font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">Exercise</label>
+                    <select name="exercise" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
                         <option value="SQUAT">Squat</option>
                         <option value="BENCH">Bench Press</option>
                         <option value="DEADLIFT">Deadlift</option>
                     </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-2">Weight</label>
-                        <input type="number" name="weight" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">Weight</label>
+                        <input type="number" name="weight" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-2">Reps</label>
-                        <input type="number" name="reps" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">Reps</label>
+                        <input type="number" name="reps" required class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-2">Set Type</label>
-                    <select name="set_type" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 text-gray-900 dark:text-white font-bold text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">Set Type</label>
+                    <select name="set_type" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
                         <option value="working">Working Set</option>
                         <option value="warmup">Warm Up</option>
                         <option value="failure">To Failure</option>
                     </select>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition duration-300 shadow-md shadow-blue-500/20 dark:shadow-blue-900/40 uppercase tracking-widest text-xs mt-4">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 md:py-4 rounded-xl transition duration-300 shadow-md shadow-blue-500/20 dark:shadow-blue-900/40 uppercase tracking-widest text-xs mt-2 md:mt-4">
                     Log Set
                 </button>
             </form>
@@ -140,37 +140,37 @@
     </div>
 
     <div class="lg:col-span-2">
-        <div class="flex justify-between items-baseline mb-6">
-            <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Today's Session</h3>
-            <span class="text-gray-400 dark:text-gray-500 text-xs font-bold tracking-widest">{{ today|date:"M j, Y" }}</span>
+        <div class="flex justify-between items-baseline mb-4 md:mb-6 mt-4 lg:mt-0">
+            <h3 class="text-lg md:text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Today's Session</h3>
+            <span class="text-gray-400 dark:text-gray-500 text-[10px] md:text-xs font-bold tracking-widest">{{ today|date:"M j, Y" }}</span>
         </div>
         
-        <div id="set-list" class="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-4 min-h-[200px] flex flex-col gap-4 transition-all">
+        <div id="set-list" class="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-2.5 md:p-4 min-h-[150px] flex flex-col gap-2.5 md:gap-4 transition-all">
             
             {% for set in todays_sets %}
                 <div id="empty-state-placeholder" hx-swap-oob="delete"></div>
 
-                <div id="set-row-{{ set.id }}" class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
-                    <div class="flex items-center gap-4">
-                        <div class="w-2 h-10 rounded-full 
+                <div id="set-row-{{ set.id }}" class="flex items-center justify-between bg-white dark:bg-gray-800 p-3 md:p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+                    <div class="flex items-center gap-3 md:gap-4">
+                        <div class="w-1.5 md:w-2 h-8 md:h-10 rounded-full 
                             {% if 'SQUAT' in set.exercise|upper %}bg-red-500
                             {% elif 'BENCH' in set.exercise|upper %}bg-blue-500
                             {% elif 'DEAD' in set.exercise|upper %}bg-green-500
                             {% else %}bg-gray-400{% endif %}">
                         </div>
                         <div>
-                            <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ set.exercise }}</h4>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase">{{ set.set_type|default:"Working Set" }}</p>
+                            <h4 class="text-xs md:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ set.exercise }}</h4>
+                            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">{{ set.set_type|default:"Working Set" }}</p>
                         </div>
                     </div>
                     
                     <div class="flex gap-4 items-center">
                         <div class="text-center">
-                            <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.weight }}</span>
+                            <span class="text-base md:text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.weight }}</span>
                             <span class="text-[8px] text-gray-400 font-bold uppercase">lbs</span>
                         </div>
                         <div class="text-center">
-                            <span class="text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>
+                            <span class="text-base md:text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>
                             <span class="text-[8px] text-gray-400 font-bold uppercase">reps</span>
                         </div>
 
@@ -180,17 +180,17 @@
                             hx-swap="outerHTML"
                             hx-confirm="Delete this set?"
                             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                            class="ml-2 p-2 text-gray-400 hover:text-red-500 transition-colors"
+                            class="ml-1 md:ml-2 p-1.5 md:p-2 text-gray-400 hover:text-red-500 transition-colors"
                             title="Delete Set">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 md:h-5 w-4 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
                 </div>
             {% empty %}
-                <div id="empty-state-placeholder" class="w-full py-12 text-center">
-                    <p class="text-gray-400 dark:text-gray-600 italic text-sm">No sets logged yet today.</p>
+                <div id="empty-state-placeholder" class="w-full py-8 text-center">
+                    <p class="text-gray-400 dark:text-gray-600 italic text-xs md:text-sm">No sets logged yet today.</p>
                 </div>
             {% endfor %}
             
