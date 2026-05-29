@@ -7,3 +7,7 @@ db.sqlite3
 # Ignore Python Cache (Keeps the repo clean)
 __pycache__/
 *.pyc
+
+# Local Development Overrides
+docker-compose.override.yml
+Caddyfile.local
