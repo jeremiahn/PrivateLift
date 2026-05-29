@@ -30,20 +30,16 @@ class LifterProfile(models.Model):
             'deadlift': round((self.deadlift_1rm * percentage) / 5) * 5,
         }
 
-# --- UX Automation: Automatically create a profile when a user is made ---
+# --- UX Automation: Automatically create/manage profile when a user is saved ---
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def save_or_create_user_profile(sender, instance, created, **kwargs):
     if created:
         LifterProfile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    # Defensively check if the profile exists before trying to save it.
-    # If it doesn't (like your superuser), create it now.
-    try:
-        instance.lifterprofile.save()
-    except LifterProfile.DoesNotExist:
-        LifterProfile.objects.create(user=instance)
+    else:
+        try:
+            instance.lifterprofile.save()
+        except LifterProfile.DoesNotExist:
+            LifterProfile.objects.create(user=instance)
 
 class WorkoutSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

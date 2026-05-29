@@ -170,5 +170,3 @@ def delete_set(request, set_id):
     
     # Return the empty response to trigger the HTMX removal
     return HttpResponse("")
-
-    return HttpResponse("Invalid request", status=400)
