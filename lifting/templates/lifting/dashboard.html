@@ -175,7 +175,7 @@
                         </div>
 
                         <button 
-                            hx-delete="{% url 'delete_set' set.id %}"
+                            hx-post="{% url 'delete_set' set.id %}"
                             hx-target="#set-row-{{ set.id }}"
                             hx-swap="outerHTML"
                             hx-confirm="Delete this set?"
