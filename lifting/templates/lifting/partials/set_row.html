@@ -34,6 +34,12 @@
             <span class="text-base md:text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>
             <span class="text-[8px] text-gray-400 font-bold uppercase">reps</span>
         </div>
+        {% if set.rpe %}
+        <div class="text-center bg-gray-50 dark:bg-gray-700/40 px-1.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-700/30">
+            <span class="text-xs md:text-sm font-black text-blue-600 dark:text-blue-400 block leading-none">@{{ set.rpe|floatformat:"-1" }}</span>
+            <span class="text-[7px] text-gray-400 dark:text-gray-500 font-bold uppercase block mt-0.5">RPE</span>
+        </div>
+        {% endif %}
 
         <button 
             hx-post="{% url 'delete_set' set.id %}"  hx-target="#set-row-{{ set.id }}"

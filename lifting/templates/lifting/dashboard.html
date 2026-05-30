@@ -90,9 +90,21 @@
                     {% else %}border-gray-500 dark:border-gray-500{% endif %}
                     flex flex-col items-start justify-center">
                     
-                    <div class="flex items-baseline gap-0.5 md:gap-1">
-                        <span class="text-base sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-none">{{ weight }}</span>
-                        <span class="text-[8px] md:text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-0.5 md:ml-1">lbs</span>
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-baseline gap-0.5 md:gap-1">
+                            <span class="text-base sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-none">{{ weight }}</span>
+                            <span class="text-[8px] md:text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-0.5 md:ml-1">lbs</span>
+                        </div>
+                        <button type="button" 
+                                onclick="openPlateCalculator({{ weight }}, '{{ exercise|escapejs }}')"
+                                class="text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 transition-colors p-1 -mr-1 md:-mr-2 rounded-md focus:outline-none"
+                                title="Plate Calculator">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 md:h-5.5 md:w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <circle cx="12" cy="12" r="9" />
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -128,13 +140,30 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">Set Type</label>
-                    <select name="set_type" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
-                        <option value="working">Working Set</option>
-                        <option value="warmup">Warm Up</option>
-                        <option value="failure">To Failure</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">Set Type</label>
+                        <select name="set_type" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                            <option value="working">Working Set</option>
+                            <option value="warmup">Warm Up</option>
+                            <option value="failure">To Failure</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1 md:mb-2">RPE (Optional)</label>
+                        <select name="rpe" class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-2.5 md:p-3 text-gray-900 dark:text-white font-bold text-xs md:text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
+                            <option value="">--</option>
+                            <option value="10">10 (Max)</option>
+                            <option value="9.5">9.5</option>
+                            <option value="9">9</option>
+                            <option value="8.5">8.5</option>
+                            <option value="8">8</option>
+                            <option value="7.5">7.5</option>
+                            <option value="7">7</option>
+                            <option value="6.5">6.5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 md:py-4 rounded-xl transition duration-300 shadow-md shadow-blue-500/20 dark:shadow-blue-900/40 uppercase tracking-widest text-xs mt-2 md:mt-4">
@@ -165,4 +194,222 @@
         </div>
     </div>
 </div>
+
+<!-- Barbell Plate Calculator Modal -->
+<div id="plateCalcModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closePlateCalculator()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-sm w-full overflow-hidden transform scale-95 opacity-0 transition-all duration-300 z-10" id="plateCalcContent">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-4 md:p-5 border-b border-gray-100 dark:border-gray-700/50">
+            <div>
+                <h3 class="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1" id="plateCalcExLabel">SQUAT</h3>
+                <h2 class="text-xl font-black text-gray-900 dark:text-white leading-none" id="plateCalcWeightLabel">225 lbs</h2>
+            </div>
+            <button onclick="closePlateCalculator()" class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Body -->
+        <div class="p-4 md:p-6 space-y-6">
+            <!-- Summary Info -->
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800/80">
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-0.5">Barbell Weight</span>
+                    <span class="text-sm font-black text-gray-700 dark:text-gray-300">45 lbs</span>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800/80">
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-0.5">Weight Per Side</span>
+                    <span class="text-sm font-black text-gray-700 dark:text-gray-300" id="plateCalcPerSide">90 lbs</span>
+                </div>
+            </div>
+            
+            <!-- Visual Barbell Sleeve Mockup -->
+            <div>
+                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-2">Visual Barbell Sleeve (Each Side)</span>
+                <div class="flex items-center justify-start bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 h-28 relative overflow-x-auto gap-0.5 shadow-inner">
+                    <!-- Sleeve Bar Line -->
+                    <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-4 bg-gray-300 dark:bg-gray-700 z-0"></div>
+                    
+                    <!-- Barbell Collar (thick silver cylinder) -->
+                    <div class="h-20 w-5 bg-gradient-to-r from-gray-400 via-gray-300 to-gray-500 dark:from-gray-600 dark:via-gray-500 dark:to-gray-700 rounded-sm shadow-md shrink-0 z-10 border border-gray-400/30"></div>
+                    
+                    <!-- Plates Container -->
+                    <div id="visualPlatesSleeve" class="flex items-center gap-0.5 z-10">
+                        <!-- Dynamic plates inserted here -->
+                    </div>
+                    
+                    <!-- End of sleeve cap -->
+                    <div class="h-4 w-32 bg-gray-300 dark:bg-gray-700 shrink-0 rounded-r-sm z-0"></div>
+                </div>
+            </div>
+            
+            <!-- Numeric List Breakdown -->
+            <div>
+                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-2">Plates Per Side List</span>
+                <div id="plateListContainer" class="space-y-2">
+                    <!-- List items inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openPlateCalculator(weight, exercise) {
+        const modal = document.getElementById('plateCalcModal');
+        const content = document.getElementById('plateCalcContent');
+        const exLabel = document.getElementById('plateCalcExLabel');
+        const weightLabel = document.getElementById('plateCalcWeightLabel');
+        const perSideLabel = document.getElementById('plateCalcPerSide');
+        const platesSleeve = document.getElementById('visualPlatesSleeve');
+        const plateList = document.getElementById('plateListContainer');
+        
+        // Formulate titles
+        exLabel.innerText = exercise.toUpperCase();
+        weightLabel.innerText = `${weight} lbs`;
+        
+        // Calculations
+        const calc = calculatePlates(weight);
+        if (calc.error) {
+            perSideLabel.innerText = "0 lbs";
+            platesSleeve.innerHTML = `<span class="text-xs text-red-500 font-bold ml-4">${calc.error}</span>`;
+            plateList.innerHTML = '';
+            showModal();
+            return;
+        }
+        
+        perSideLabel.innerText = `${calc.oneSideWeight} lbs`;
+        
+        // Build Visual Plate Sleeve & List
+        let sleeveHtml = '';
+        let listHtml = '';
+        
+        if (calc.breakdown.length === 0) {
+            sleeveHtml = '<span class="text-xs text-gray-400 italic ml-4">Empty Barbell</span>';
+            listHtml = '<div class="text-center py-2 text-xs text-gray-400 italic">No additional plates needed. Load only the empty barbell.</div>';
+        } else {
+            const heightMap = {
+                45: 'h-24',
+                25: 'h-20',
+                10: 'h-16',
+                5: 'h-12',
+                2.5: 'h-8'
+            };
+            const widthMap = {
+                45: 'w-6 md:w-7',
+                25: 'w-5 md:w-6',
+                10: 'w-4 md:w-5',
+                5: 'w-4',
+                2.5: 'w-3'
+            };
+            
+            calc.breakdown.forEach(plate => {
+                const heightClass = heightMap[plate.weight] || 'h-10';
+                const widthClass = widthMap[plate.weight] || 'w-4';
+                
+                // Add the plates to the visual sleeve
+                for (let i = 0; i < plate.count; i++) {
+                    sleeveHtml += `
+                        <div class="${heightClass} ${widthClass} ${plate.color} rounded-sm shadow-md border-y border-opacity-30 flex items-center justify-center shrink-0 hover:scale-105 transition-transform duration-200 cursor-help" 
+                             title="${plate.name}">
+                            <span class="text-[6px] md:text-[8px] font-black tracking-tighter leading-none pointer-events-none select-none">${plate.weight}</span>
+                        </div>
+                    `;
+                }
+                
+                // Add the plates to the numeric list
+                listHtml += `
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
+                        <div class="flex items-center gap-3">
+                            <div class="h-4 w-4 rounded-full ${plate.color.split(' ')[0]} border border-black/10 shrink-0"></div>
+                            <span class="text-xs md:text-sm font-bold text-gray-700 dark:text-gray-200">${plate.name}</span>
+                        </div>
+                        <span class="text-sm font-black text-gray-900 dark:text-white">x ${plate.count}</span>
+                    </div>
+                `;
+            });
+            
+            if (calc.remaining > 0) {
+                listHtml += `
+                    <div class="text-[10px] text-amber-500 font-bold uppercase text-center mt-2">
+                        Remainder: ${calc.remaining} lbs cannot be loaded with standard plates
+                    </div>
+                `;
+            }
+        }
+        
+        platesSleeve.innerHTML = sleeveHtml;
+        plateList.innerHTML = listHtml;
+        
+        showModal();
+    }
+    
+    function calculatePlates(totalWeight) {
+        const barbell = 45;
+        if (totalWeight < barbell) {
+            return { error: `Weight is less than empty barbell (45 lbs)` };
+        }
+        let remaining = (totalWeight - barbell) / 2;
+        const plates = [
+            { name: '45 lbs Plate', weight: 45, color: 'bg-red-500 border-red-600 text-white' },
+            { name: '25 lbs Plate', weight: 25, color: 'bg-blue-500 border-blue-600 text-white' },
+            { name: '10 lbs Plate', weight: 10, color: 'bg-green-500 border-green-600 text-white' },
+            { name: '5 lbs Plate', weight: 5, color: 'bg-amber-500 border-amber-600 text-white' },
+            { name: '2.5 lbs Plate', weight: 2.5, color: 'bg-gray-400 border-gray-500 text-gray-900 dark:text-white' }
+        ];
+        
+        let breakdown = [];
+        for (let plate of plates) {
+            let count = Math.floor(remaining / plate.weight);
+            if (count > 0) {
+                breakdown.push({
+                    name: plate.name,
+                    weight: plate.weight,
+                    count: count,
+                    color: plate.color
+                });
+                remaining -= count * plate.weight;
+            }
+        }
+        
+        return {
+            barbell: barbell,
+            oneSideWeight: (totalWeight - barbell) / 2,
+            breakdown: breakdown,
+            remaining: remaining
+        };
+    }
+    
+    function showModal() {
+        const modal = document.getElementById('plateCalcModal');
+        const content = document.getElementById('plateCalcContent');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        });
+    }
+    
+    function closePlateCalculator() {
+        const modal = document.getElementById('plateCalcModal');
+        const content = document.getElementById('plateCalcContent');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closePlateCalculator();
+        }
+    });
+</script>
 {% endblock %}

@@ -21,7 +21,7 @@
     </div>
 
     <!-- BENCH -->
-    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-blue-200 dark:border-blue-500 shadow-sm dark:shadow-lg border-l-4 flex justify-between items-center">
+    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg border-l-4 border-blue-500 flex justify-between items-center">
         <div class="w-1/3 text-left">
             <h3 class="text-xs md:text-sm font-black text-blue-500 uppercase tracking-wider">BENCH</h3>
         </div>
@@ -50,6 +50,183 @@
         </div>
     </div>
 </div>
+
+{% if weekly_breakdown %}
+<div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg mb-8 md:mb-10 transition-all duration-300">
+    <h2 class="text-xl font-black text-gray-900 dark:text-white mb-4 uppercase tracking-tight">e1RM Progression</h2>
+    <div class="relative h-64 md:h-[350px] w-full">
+        <canvas id="e1rmChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('e1rmChart').getContext('2d');
+        const chartData = JSON.parse('{{ e1rm_chart_data_json|escapejs }}');
+        
+        if (!chartData.labels || chartData.labels.length === 0) return;
+
+        const isDark = document.documentElement.classList.contains('dark');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const textColor = isDark ? '#9ca3af' : '#4b5563';
+        
+        const squatColor = '#ef4444'; // Red
+        const benchColor = '#3b82f6'; // Blue
+        const deadliftColor = '#10b981'; // Green
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [
+                    {
+                        label: 'Squat',
+                        data: chartData.squat,
+                        borderColor: squatColor,
+                        backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                        borderWidth: 3,
+                        pointBackgroundColor: squatColor,
+                        pointBorderColor: isDark ? '#1f2937' : '#ffffff',
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderColor: squatColor,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        spanGaps: true
+                    },
+                    {
+                        label: 'Bench Press',
+                        data: chartData.bench,
+                        borderColor: benchColor,
+                        backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                        borderWidth: 3,
+                        pointBackgroundColor: benchColor,
+                        pointBorderColor: isDark ? '#1f2937' : '#ffffff',
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderColor: benchColor,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        spanGaps: true
+                    },
+                    {
+                        label: 'Deadlift',
+                        data: chartData.deadlift,
+                        borderColor: deadliftColor,
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        borderWidth: 3,
+                        pointBackgroundColor: deadliftColor,
+                        pointBorderColor: isDark ? '#1f2937' : '#ffffff',
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderColor: deadliftColor,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        spanGaps: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                weight: '800',
+                                size: 11
+                            },
+                            boxWidth: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                        titleColor: isDark ? '#ffffff' : '#111827',
+                        bodyColor: isDark ? '#e5e7eb' : '#374151',
+                        borderColor: isDark ? '#374151' : '#e5e7eb',
+                        borderWidth: 1,
+                        padding: 12,
+                        titleFont: {
+                            family: 'Inter, system-ui, sans-serif',
+                            weight: '800',
+                            size: 13
+                        },
+                        bodyFont: {
+                            family: 'Inter, system-ui, sans-serif',
+                            weight: '600',
+                            size: 12
+                        },
+                        callbacks: {
+                            labelColor: function(context) {
+                                return {
+                                    borderColor: context.dataset.borderColor,
+                                    backgroundColor: context.dataset.borderColor,
+                                    borderRadius: 3
+                                };
+                            },
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + ' lbs';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                weight: '700',
+                                size: 10
+                            },
+                            maxRotation: 45,
+                            minRotation: 0
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: 'Inter, system-ui, sans-serif',
+                                weight: '700',
+                                size: 10
+                            },
+                            callback: function(value) {
+                                return value + ' lbs';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
 
 <hr class="border-gray-200 dark:border-gray-700/50 mb-6 md:mb-10">
 

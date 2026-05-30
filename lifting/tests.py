@@ -643,3 +643,101 @@ class GlobalSecurityTests(TestCase):
                 response.url.startswith('/accounts/login/'), 
                 f"SECURITY LEAK: The URL '{url}' redirected somewhere other than the login page!"
             )
+
+
+class UpdateSetTypeTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        
+        # Create User A
+        self.user_a = User.objects.create_user(username='user_a', password='password123')
+        self.session_a = WorkoutSession.objects.create(user=self.user_a, date=date.today())
+        self.set_a = WorkoutSet.objects.create(
+            session=self.session_a, 
+            exercise='SQUAT', 
+            weight=315, 
+            reps=5, 
+            set_type='working'
+        )
+
+        # Create User B
+        self.user_b = User.objects.create_user(username='user_b', password='password123')
+        self.session_b = WorkoutSession.objects.create(user=self.user_b, date=date.today())
+        self.set_b = WorkoutSet.objects.create(
+            session=self.session_b, 
+            exercise='BENCH', 
+            weight=225, 
+            reps=5, 
+            set_type='working'
+        )
+
+        self.url_name = 'update_set_type'
+
+    def test_update_set_type_success(self):
+        """Happy Path: A user successfully updates their own set type via POST."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[self.set_a.id])
+        
+        # Update type to warmup
+        response = self.client.post(url, data={'set_type': 'warmup'})
+        
+        self.assertEqual(response.status_code, 200)
+        self.set_a.refresh_from_db()
+        self.assertEqual(self.set_a.set_type, 'warmup')
+
+        # Update type to failure
+        response = self.client.post(url, data={'set_type': 'failure'})
+        self.assertEqual(response.status_code, 200)
+        self.set_a.refresh_from_db()
+        self.assertEqual(self.set_a.set_type, 'failure')
+
+    def test_update_set_type_wrong_method(self):
+        """Method Check: The view must reject GET requests because of @require_POST."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[self.set_a.id])
+        
+        response = self.client.get(url, data={'set_type': 'warmup'})
+        self.assertEqual(response.status_code, 405)
+        
+        self.set_a.refresh_from_db()
+        self.assertEqual(self.set_a.set_type, 'working')
+
+    def test_update_set_type_cross_user_isolation(self):
+        """Security: User A tries to update User B's set type."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[self.set_b.id])
+        
+        response = self.client.post(url, data={'set_type': 'warmup'})
+        self.assertEqual(response.status_code, 404)
+        
+        self.set_b.refresh_from_db()
+        self.assertEqual(self.set_b.set_type, 'working')
+
+    def test_update_set_type_invalid_value(self):
+        """Sad Path: Trying to update set_type to an invalid value does not change it."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[self.set_a.id])
+        
+        response = self.client.post(url, data={'set_type': 'invalid_type'})
+        self.assertEqual(response.status_code, 200)
+        
+        self.set_a.refresh_from_db()
+        self.assertEqual(self.set_a.set_type, 'working') # remains working
+
+    def test_update_set_type_not_found(self):
+        """Sad Path: A user tries to update a set ID that doesn't exist."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[999])
+        
+        response = self.client.post(url, data={'set_type': 'warmup'})
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_set_type_unauthenticated(self):
+        """Security: An anonymous user tries to update a set type."""
+        url = reverse(self.url_name, args=[self.set_a.id])
+        
+        response = self.client.post(url, data={'set_type': 'warmup'})
+        self.assertEqual(response.status_code, 302)
+        
+        self.set_a.refresh_from_db()
+        self.assertEqual(self.set_a.set_type, 'working')
