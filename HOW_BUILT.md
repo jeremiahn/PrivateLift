@@ -112,6 +112,15 @@ During development, several complex bugs and interesting environment issues aros
     </button>
     ```
 
+### 5. The Containerized Database Migration Gap
+> [!IMPORTANT]
+> **Symptom**: After deploying new updates to production, attempting to log in crashed with `OperationalError: no such column: lifting_lifterprofile.body_weight`.
+*   **Root Cause**: Logging in updates the user's `last_login` field, which fires a `post_save` signal that invokes `instance.lifterprofile.save()`. Because the production SQLite database had not been updated to match the new `LifterProfile` fields (`body_weight`, `gender`, `formula_preference`), the SQL update query failed. Running `python manage.py migrate` directly on the host machine failed due to a missing Python Django environment.
+*   **The Fix**: Applied the migrations directly inside the active web container on the host server:
+    ```bash
+    docker exec -t powerlifting_app_prod-web-1 python manage.py migrate
+    ```
+
 ---
 
 ## DevOps & Branch Management Strategy
