@@ -74,6 +74,23 @@
         </div>
     </div>
 
+    <!-- Danger Zone / Account Actions -->
+    <div class="mt-4 md:mt-8 bg-gray-800 rounded-xl p-4 md:p-6 shadow-lg border border-red-900/30">
+        <h3 class="text-xs font-bold text-red-500 uppercase tracking-widest mb-3 md:mb-4">Session Management</h3>
+        <div class="flex items-center justify-between bg-gray-900 p-3 md:p-4 rounded-lg border border-gray-700">
+            <div>
+                <p class="text-xs md:text-sm font-bold text-gray-200">Logout</p>
+                <p class="text-[10px] md:text-xs text-gray-500">Sign out of your PrivateLift account</p>
+            </div>
+            <form action="{% url 'logout' %}" method="post" class="m-0">
+                {% csrf_token %}
+                <button type="submit" class="bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-600 dark:text-red-200 text-xs font-bold py-2.5 px-4 rounded-lg transition border border-red-200 dark:border-red-800/60">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Info Footer -->
     <div class="mt-4 md:mt-8 flex items-start gap-3 md:gap-4 p-3 md:p-4 bg-blue-900/10 border border-blue-800/30 rounded-lg">
         <div class="text-blue-500 mt-0.5">
