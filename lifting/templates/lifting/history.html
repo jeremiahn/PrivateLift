@@ -11,7 +11,7 @@
 </div>
 
 {% for session in sessions %}
-    <details class="group bg-gray-800 rounded-xl border border-gray-700 shadow-lg mb-4 md:mb-6 transition-all duration-300">
+    <details class="group bg-gray-800 rounded-xl border border-gray-700 shadow-lg mb-4 md:mb-6 transition-all duration-300" {% if forloop.first %}open{% endif %}>
         <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center justify-between p-4 md:p-6 cursor-pointer select-none focus:outline-none">
             <h2 class="text-lg md:text-xl font-bold text-blue-400">
                 {{ session.date|date:"F j, Y" }}
