@@ -128,35 +128,7 @@
     
     <div class="lg:col-span-1 space-y-4 md:space-y-6">
         
-        <!-- Workout Routines / Builder Panel -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
-            <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight border-b border-gray-100 dark:border-gray-700 pb-2">Workout Routines</h3>
-            
-            <form method="POST" action="{% url 'load_template' %}" class="space-y-3">
-                {% csrf_token %}
-                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Load Routine Template</label>
-                <div class="flex gap-2">
-                    <select name="template_id" class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2.5 py-2 text-gray-900 dark:text-white font-bold text-xs focus:ring-2 focus:ring-blue-500 outline-none h-9">
-                        {% for t in templates %}
-                            <option value="{{ t.id }}">{{ t.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-black text-[10px] px-3.5 py-2 rounded-lg uppercase tracking-wider transition-colors shadow-md shadow-blue-500/10">Load</button>
-                </div>
-            </form>
-            
-            {% if todays_sets.exists %}
-            <div class="border-t border-gray-100 dark:border-gray-700/50 my-4"></div>
-            <form method="POST" action="{% url 'save_template' %}" class="space-y-3">
-                {% csrf_token %}
-                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Save Today's Session</label>
-                <div class="flex gap-2">
-                    <input type="text" name="template_name" placeholder="Routine Name..." required class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2.5 py-2 text-gray-900 dark:text-white font-bold text-xs focus:ring-2 focus:ring-blue-500 outline-none h-9">
-                    <button type="submit" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-black text-[10px] px-3.5 py-2 rounded-lg uppercase tracking-wider transition-colors">Save</button>
-                </div>
-            </form>
-            {% endif %}
-        </div>
+
 
         <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700 md:sticky md:top-8">
             <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-4 md:mb-6 uppercase tracking-tight border-b border-gray-100 dark:border-gray-700 pb-2">Log New Set</h3>
