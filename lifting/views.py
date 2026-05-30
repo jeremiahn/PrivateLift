@@ -2,7 +2,7 @@ import csv
 from django.shortcuts import render, redirect, get_object_or_404 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from datetime import date
+from datetime import date, datetime
 from .models import LifterProfile, WorkoutSession, WorkoutSet
 from django.db.models import Sum, F, Max
 from django.db.models.functions import TruncWeek
@@ -103,6 +103,133 @@ def export_data(request):
             s.get_set_type_display()
         ])
     return response
+
+@login_required
+@require_POST
+def import_data(request):
+    csv_file = request.FILES.get('csv_file')
+    if not csv_file:
+        return redirect('history')
+        
+    if not csv_file.name.endswith('.csv'):
+        return HttpResponse("Please upload a valid CSV file.", status=400)
+        
+    decoded_file = csv_file.read().decode('utf-8').splitlines()
+    reader = csv.reader(decoded_file)
+    
+    try:
+        header = next(reader)
+    except StopIteration:
+        return HttpResponse("CSV file is empty.", status=400)
+        
+    header_lower = [h.strip().lower() for h in header]
+    
+    date_idx = -1
+    exercise_idx = -1
+    weight_idx = -1
+    reps_idx = -1
+    set_type_idx = -1
+    rpe_idx = -1
+    
+    for i, col in enumerate(header_lower):
+        if 'date' in col:
+            date_idx = i
+        elif 'exercise' in col:
+            exercise_idx = i
+        elif 'weight' in col:
+            weight_idx = i
+        elif 'rep' in col:
+            reps_idx = i
+        elif 'type' in col:
+            set_type_idx = i
+        elif 'rpe' in col:
+            rpe_idx = i
+
+    if date_idx == -1:
+        date_idx = 0
+    if exercise_idx == -1:
+        exercise_idx = 2 if len(header_lower) > 2 and 'week' in header_lower[1] else 1
+    if weight_idx == -1:
+        weight_idx = 3 if len(header_lower) > 3 and 'week' in header_lower[1] else 2
+    if reps_idx == -1:
+        reps_idx = 4 if len(header_lower) > 4 and 'week' in header_lower[1] else 3
+    if set_type_idx == -1:
+        set_type_idx = 7 if len(header_lower) > 7 and 'week' in header_lower[1] else -1
+
+    for row in reader:
+        if not row or len(row) <= max(date_idx, exercise_idx, weight_idx, reps_idx):
+            continue
+            
+        date_str = row[date_idx].strip()
+        ex_str = row[exercise_idx].strip().upper()
+        weight_str = row[weight_idx].strip()
+        reps_str = row[reps_idx].strip()
+        
+        if not date_str or not ex_str or not weight_str or not reps_str:
+            continue
+            
+        parsed_date = None
+        for fmt in ('%Y-%m-%d', '%m/%d/%Y', '%d/%m/%Y', '%Y/%m/%d'):
+            try:
+                parsed_date = datetime.strptime(date_str, fmt).date()
+                break
+            except ValueError:
+                continue
+                
+        if not parsed_date:
+            continue
+            
+        exercise = None
+        if 'SQUAT' in ex_str:
+            exercise = 'SQUAT'
+        elif 'BENCH' in ex_str:
+            exercise = 'BENCH'
+        elif 'DEADLIFT' in ex_str:
+            exercise = 'DEADLIFT'
+            
+        if not exercise:
+            continue
+            
+        try:
+            weight = int(float(weight_str))
+            reps = int(float(reps_str))
+        except ValueError:
+            continue
+            
+        set_type = 'working'
+        if set_type_idx != -1 and set_type_idx < len(row):
+            st_str = row[set_type_idx].strip().lower()
+            if 'warm' in st_str:
+                set_type = 'warmup'
+            elif 'fail' in st_str:
+                set_type = 'failure'
+            else:
+                set_type = 'working'
+                
+        rpe = None
+        if rpe_idx != -1 and rpe_idx < len(row):
+            rpe_str = row[rpe_idx].strip()
+            if rpe_str:
+                try:
+                    rpe = float(rpe_str)
+                except ValueError:
+                    pass
+                    
+        session, created = WorkoutSession.objects.get_or_create(
+            user=request.user,
+            date=parsed_date
+        )
+        
+        WorkoutSet.objects.create(
+            session=session,
+            exercise=exercise,
+            weight=weight,
+            reps=reps,
+            set_type=set_type,
+            rpe=rpe
+        )
+        
+    return redirect('history')
 
 @login_required
 def history(request):

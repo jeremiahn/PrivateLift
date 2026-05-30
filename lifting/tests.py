@@ -3,6 +3,7 @@ from .models import WorkoutSession, WorkoutSet, LifterProfile
 from django.test import TestCase, Client
 from django.urls import reverse
 from datetime import date, timedelta
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class BoundaryLimitTests(TestCase):
     def setUp(self):
@@ -233,6 +234,44 @@ class ExportDataViewTests(TestCase):
         response = self.client.get(url)
         
         # Verify they are bounced back to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login/'))
+
+class ImportDataViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='importer_a', password='password123')
+        self.url = reverse('import_data')
+
+    def test_import_csv_happy_path(self):
+        self.client.login(username='importer_a', password='password123')
+        
+        csv_content = (
+            "Date,Training Week Start,Exercise,Weight (lbs),Reps,Set Tonnage (lbs),Estimated 1RM,Set Type\n"
+            "2026-05-25,2026-05-25,Squat,315,5,1575,367,Working\n"
+            "2026-05-26,2026-05-25,Bench Press,225,5,1125,262,Working\n"
+        )
+        
+        csv_file = SimpleUploadedFile("lifting_data.csv", csv_content.encode('utf-8'), content_type="text/csv")
+        
+        response = self.client.post(self.url, {'csv_file': csv_file})
+        self.assertEqual(response.status_code, 302)
+        
+        sessions = WorkoutSession.objects.filter(user=self.user)
+        self.assertEqual(sessions.count(), 2)
+        
+        sets = WorkoutSet.objects.filter(session__user=self.user)
+        self.assertEqual(sets.count(), 2)
+        
+        squat_set = sets.get(exercise='SQUAT')
+        self.assertEqual(squat_set.weight, 315)
+        self.assertEqual(squat_set.reps, 5)
+        self.assertEqual(squat_set.e1rm, 368) # 315 * (1 + 5/30) = 367.5 -> rounded to 368
+        self.assertEqual(squat_set.session.date.strftime('%Y-%m-%d'), '2026-05-25')
+
+    def test_import_csv_unauthenticated(self):
+        csv_file = SimpleUploadedFile("lifting_data.csv", b"dummy content", content_type="text/csv")
+        response = self.client.post(self.url, {'csv_file': csv_file})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login/'))
 
