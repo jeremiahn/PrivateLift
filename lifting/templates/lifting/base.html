@@ -15,36 +15,38 @@
     <main class="max-w-6xl mx-auto px-2 py-4 pb-20 sm:px-4 sm:py-6 md:pb-6">
         <header class="flex flex-row justify-between items-center bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg mb-4 md:mb-8 transition-colors">
             
-            <!-- Left Side: Navigation Links (Desktop) -->
-            {% if request.user.is_authenticated %}
-            <nav class="hidden md:flex items-center gap-2">
-                <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-4 rounded-lg transition border border-blue-500 shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
-                    Dashboard
-                </a>
-                <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                    Stats
-                </a>
-                <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                    History
-                </a>
-                <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                    Settings
-                </a>
-            </nav>
-            {% else %}
-            <!-- Spacer to keep brand right-aligned when not logged in -->
-            <div></div>
-            {% endif %}
+            <!-- Left Side: Navigation Links (Desktop) or Tagline (Mobile) -->
+            <div class="flex items-center">
+                {% if request.user.is_authenticated %}
+                <nav class="hidden md:flex items-center gap-2">
+                    <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-4 rounded-lg transition border border-blue-500 shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
+                        Dashboard
+                    </a>
+                    <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                        Stats
+                    </a>
+                    <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                        History
+                    </a>
+                    <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                        Settings
+                    </a>
+                </nav>
+                {% endif %}
+                
+                <!-- Mobile Tagline (Visible only on mobile) -->
+                <span class="md:hidden text-[7px] min-[360px]:text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-none">
+                    Platform Performance Tracking
+                </span>
+            </div>
 
-            <!-- Right Side: Brand Text & Logo -->
-            <a href="{% url 'dashboard' %}" class="flex items-center gap-2.5 md:gap-4 hover:text-blue-500 transition group ml-auto">
-                <img src="{% static 'lifting/logo.png' %}" class="h-8 sm:h-9 md:h-12 w-auto object-contain rounded-md" alt="PrivateLift Logo">
-                <div class="text-left">
-                    <span class="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight group-hover:text-blue-500 transition leading-none">
-                        PRIVATE<span class="text-blue-500">LIFT</span>
-                    </span>
-                    <p class="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-1 uppercase tracking-wider hidden sm:block">Platform Performance Tracking</p>
-                </div>
+            <!-- Right Side: Brand Text -->
+            <a href="{% url 'dashboard' %}" class="flex flex-col items-end hover:text-blue-500 transition text-right group ml-auto">
+                <span class="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight group-hover:text-blue-500 transition leading-none">
+                    PRIVATE<span class="text-blue-500">LIFT</span>
+                </span>
+                <!-- Desktop Tagline (Hidden on mobile, visible on desktop) -->
+                <p class="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-1 uppercase tracking-wider hidden md:block">Platform Performance Tracking</p>
             </a>
         </header>
 
