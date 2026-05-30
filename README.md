@@ -26,15 +26,15 @@ The application features a modern, mobile-friendly interface designed for fat-fi
 ```mermaid
 graph TD
     subgraph LAN / Tailnet
-        Mac[Mac Pro/MacBook (Local Dev)]
-        Phone[Mobile Phone at the Gym]
-        Server[Linux Home Server]
+        Mac["Mac Pro/MacBook (Local Dev)"]
+        Phone["Mobile Phone at the Gym"]
+        Server["Linux Home Server"]
     end
 
     subgraph Linux Home Server Docker Environment
-        Caddy[Caddy Container (Port 80/443)]
-        Gunicorn[Gunicorn Web Container (Port 8000)]
-        DB[(SQLite / db.sqlite3)]
+        Caddy["Caddy Container (Port 80/443)"]
+        Gunicorn["Gunicorn Web Container (Port 8000)"]
+        DB[("SQLite / db.sqlite3")]
     end
 
     Mac -- Git Push / Deploy --> Server
