@@ -13,36 +13,32 @@
     <div class="h-1.5 bg-gradient-to-r from-red-500 via-blue-500 to-green-500 w-full"></div>
 
     <main class="max-w-6xl mx-auto px-2 py-4 pb-20 sm:px-4 sm:py-6 md:pb-6">
-        <header class="flex flex-row justify-between items-center bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg mb-4 md:mb-8 transition-colors">
-            <div class="text-left">
+        <header class="flex flex-col items-center bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg mb-4 md:mb-8 transition-colors gap-3 md:gap-4">
+            <div class="text-center">
                 <a href="{% url 'dashboard' %}" class="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight hover:text-blue-500 transition">
                     PRIVATE<span class="text-blue-500">LIFT</span>
                 </a>
                 <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-semibold mt-0.5 uppercase tracking-wider hidden sm:block">Platform Performance Tracking</p>
             </div>
             
-            <div class="flex items-center gap-3 md:gap-4">
-                {% if request.user.is_authenticated %}
-                <nav class="hidden md:flex items-center gap-2">
-                    
-                    <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-4 rounded-lg transition border border-blue-500 shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
-                        Dashboard
-                    </a>
-                    
-                    <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                        Stats
-                    </a>
-                    <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                        History
-                    </a>
-                    <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                        Settings
-                    </a>
-                </nav>
-                {% endif %}
+            {% if request.user.is_authenticated %}
+            <nav class="hidden md:flex items-center gap-2">
                 
-                <img src="{% static 'lifting/logo.png' %}" class="h-8 sm:h-9 md:h-12 w-auto object-contain rounded-md" alt="PrivateLift Logo">
-            </div>
+                <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-4 rounded-lg transition border border-blue-500 shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
+                    Dashboard
+                </a>
+                
+                <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                    Stats
+                </a>
+                <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                    History
+                </a>
+                <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                    Settings
+                </a>
+            </nav>
+            {% endif %}
         </header>
 
         {% block content %}{% endblock %}
