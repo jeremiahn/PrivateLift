@@ -107,7 +107,52 @@ def export_data(request):
 @login_required
 def history(request):
     sessions = WorkoutSession.objects.filter(user=request.user).prefetch_related('sets').order_by('-date')
-    return render(request, 'lifting/history.html', {'sessions': sessions})
+    
+    # e1RM Progression Chart Data
+    user_sets = WorkoutSet.objects.filter(session__user=request.user).exclude(set_type='warmup')
+    e1rm_raw = user_sets.filter(e1rm__isnull=False).values('session__date', 'exercise') \
+                        .annotate(max_e1rm=Max('e1rm')) \
+                        .order_by('session__date')
+
+    dates_set = sorted(list(set(entry['session__date'] for entry in e1rm_raw if entry['session__date'])))
+    dates_str = [d.strftime('%Y-%m-%d') for d in dates_set]
+
+    squat_data = [None] * len(dates_set)
+    bench_data = [None] * len(dates_set)
+    deadlift_data = [None] * len(dates_set)
+
+    date_to_idx = {d: i for i, d in enumerate(dates_set)}
+
+    for entry in e1rm_raw:
+        d = entry['session__date']
+        if not d:
+            continue
+        idx = date_to_idx[d]
+        ex_key = entry['exercise'].upper()
+        if 'BENCH' in ex_key:
+            ex_key = 'BENCH'
+        
+        val = entry['max_e1rm']
+        if ex_key == 'SQUAT':
+            squat_data[idx] = val
+        elif ex_key == 'BENCH':
+            bench_data[idx] = val
+        elif ex_key == 'DEADLIFT':
+            deadlift_data[idx] = val
+
+    e1rm_chart_data = {
+        'labels': dates_str,
+        'squat': squat_data,
+        'bench': bench_data,
+        'deadlift': deadlift_data,
+    }
+
+    context = {
+        'sessions': sessions,
+        'e1rm_chart_data_json': json.dumps(e1rm_chart_data),
+        'show_chart': len(dates_set) > 0,
+    }
+    return render(request, 'lifting/history.html', context)
 
 @login_required
 def analytics(request):
@@ -154,50 +199,11 @@ def analytics(request):
         if exercise_key in tonnage:
             tonnage[exercise_key] += (workout_set.weight * workout_set.reps)
             lifetime_reps[exercise_key] += workout_set.reps
-            
-    # e1RM Progression Chart Data
-    e1rm_raw = user_sets.filter(e1rm__isnull=False).values('session__date', 'exercise') \
-                        .annotate(max_e1rm=Max('e1rm')) \
-                        .order_by('session__date')
-
-    dates_set = sorted(list(set(entry['session__date'] for entry in e1rm_raw if entry['session__date'])))
-    dates_str = [d.strftime('%Y-%m-%d') for d in dates_set]
-
-    squat_data = [None] * len(dates_set)
-    bench_data = [None] * len(dates_set)
-    deadlift_data = [None] * len(dates_set)
-
-    date_to_idx = {d: i for i, d in enumerate(dates_set)}
-
-    for entry in e1rm_raw:
-        d = entry['session__date']
-        if not d:
-            continue
-        idx = date_to_idx[d]
-        ex_key = entry['exercise'].upper()
-        if 'BENCH' in ex_key:
-            ex_key = 'BENCH'
-        
-        val = entry['max_e1rm']
-        if ex_key == 'SQUAT':
-            squat_data[idx] = val
-        elif ex_key == 'BENCH':
-            bench_data[idx] = val
-        elif ex_key == 'DEADLIFT':
-            deadlift_data[idx] = val
-
-    e1rm_chart_data = {
-        'labels': dates_str,
-        'squat': squat_data,
-        'bench': bench_data,
-        'deadlift': deadlift_data,
-    }
 
     context = {
         'tonnage': tonnage, 
         'total_reps': lifetime_reps,
         'weekly_breakdown': weekly_breakdown,
-        'e1rm_chart_data_json': json.dumps(e1rm_chart_data),
     }
     return render(request, 'lifting/analytics.html', context)
 
