@@ -4,45 +4,45 @@
 
 {% block content %}
 <h2 class="text-xl font-black text-white mb-6 uppercase tracking-tight">Lifetime Totals</h2>
-<div class="grid grid-cols-3 gap-2 md:gap-6 mb-8 md:mb-10">
-    <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-red-500 flex flex-col justify-between items-center text-center">
-        <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 w-full text-center">SQUAT</h3>
-        <div class="flex flex-col gap-2 md:gap-3">
-            <div>
+<div class="grid grid-cols-3 gap-1.5 min-[375px]:gap-2 md:gap-6 mb-8 md:mb-10">
+    <div class="bg-gray-800 p-2 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-red-500 flex flex-col justify-between min-h-[85px] md:min-h-[140px]">
+        <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 text-left w-full">SQUAT</h3>
+        <div class="relative w-full flex items-center min-h-[32px] md:min-h-[48px]">
+            <div class="absolute left-1/2 -translate-x-1/2 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
-                <p class="text-red-400 font-black text-xs md:text-2xl leading-none whitespace-nowrap">{{ tonnage.SQUAT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
+                <p class="text-red-400 font-black text-[10px] min-[375px]:text-xs md:text-2xl leading-none whitespace-nowrap">{{ tonnage.SQUAT|default:0 }} <span class="text-[7px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div>
+            <div class="ml-auto text-right">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
-                <p class="text-green-400 font-black text-xs md:text-2xl leading-none whitespace-nowrap">{{ total_reps.SQUAT|default:0 }}</p>
+                <p class="text-green-400 font-black text-[10px] min-[375px]:text-xs md:text-2xl leading-none whitespace-nowrap">{{ total_reps.SQUAT|default:0 }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-blue-500 shadow-lg border-t-4 flex flex-col justify-between items-center text-center">
-        <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 w-full text-center">BENCH</h3>
-        <div class="flex flex-col gap-2 md:gap-3">
-            <div>
+    <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-blue-500 shadow-lg border-t-4 flex flex-col justify-between min-h-[85px] md:min-h-[140px]">
+        <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 text-left w-full">BENCH</h3>
+        <div class="relative w-full flex items-center min-h-[32px] md:min-h-[48px]">
+            <div class="absolute left-1/2 -translate-x-1/2 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
-                <p class="text-blue-400 font-black text-xs md:text-2xl leading-none whitespace-nowrap">{{ tonnage.BENCH|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
+                <p class="text-blue-400 font-black text-[10px] min-[375px]:text-xs md:text-2xl leading-none whitespace-nowrap">{{ tonnage.BENCH|default:0 }} <span class="text-[7px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div>
+            <div class="ml-auto text-right">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
-                <p class="text-green-400 font-black text-xs md:text-2xl leading-none whitespace-nowrap">{{ total_reps.BENCH|default:0 }}</p>
+                <p class="text-green-400 font-black text-[10px] min-[375px]:text-xs md:text-2xl leading-none whitespace-nowrap">{{ total_reps.BENCH|default:0 }}</p>
             </div>
         </div>
     </div>
 
-    <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-green-500 flex flex-col justify-between items-center text-center">
-        <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 w-full text-center">DEADLIFT</h3>
-        <div class="flex flex-col gap-2 md:gap-3">
-            <div>
+    <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-green-500 flex flex-col justify-between min-h-[85px] md:min-h-[140px]">
+        <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 text-left w-full">DEADLIFT</h3>
+        <div class="relative w-full flex items-center min-h-[32px] md:min-h-[48px]">
+            <div class="absolute left-1/2 -translate-x-1/2 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
-                <p class="text-green-400 font-black text-xs md:text-2xl leading-none whitespace-nowrap">{{ tonnage.DEADLIFT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
+                <p class="text-green-400 font-black text-[10px] min-[375px]:text-xs md:text-2xl leading-none whitespace-nowrap">{{ tonnage.DEADLIFT|default:0 }} <span class="text-[7px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div>
+            <div class="ml-auto text-right">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
-                <p class="text-green-400 font-black text-xs md:text-2xl leading-none whitespace-nowrap">{{ total_reps.DEADLIFT|default:0 }}</p>
+                <p class="text-green-400 font-black text-[10px] min-[375px]:text-xs md:text-2xl leading-none whitespace-nowrap">{{ total_reps.DEADLIFT|default:0 }}</p>
             </div>
         </div>
     </div>
