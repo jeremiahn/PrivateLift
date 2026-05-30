@@ -1,0 +1,43 @@
+<div id="set-{{ set.id }}" class="flex justify-between items-center bg-gray-900 p-3 md:p-4 rounded-lg border border-gray-700 transition">
+    <div class="flex flex-col">
+        <span class="text-gray-300 font-bold text-base md:text-lg leading-tight">{{ set.exercise }}</span>
+        <span class="text-gray-500 text-xs md:text-sm font-normal">{{ set.weight }} lbs x {{ set.reps }} reps</span>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-4 text-right">
+        <div class="mr-1 md:mr-2">
+            <select hx-post="{% url 'update_set_type' set.id %}?page=history"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    hx-target="#set-{{ set.id }}"
+                    hx-swap="outerHTML"
+                    name="set_type"
+                    class="px-1.5 py-0.5 md:px-2 md:py-1 text-[8px] md:text-[10px] font-bold uppercase rounded border cursor-pointer focus:outline-none transition
+                        {% if set.set_type == 'warmup' %}bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600
+                        {% elif set.set_type == 'failure' %}bg-red-900/50 text-red-300 border-red-800 hover:bg-red-900/70
+                        {% else %}bg-blue-900/30 text-blue-300 border-blue-900/50 hover:bg-blue-900/50{% endif %}">
+                <option class="bg-gray-950 text-white" value="working" {% if set.set_type == 'working' or not set.set_type %}selected{% endif %}>Working</option>
+                <option class="bg-gray-950 text-white" value="warmup" {% if set.set_type == 'warmup' %}selected{% endif %}>Warm Up</option>
+                <option class="bg-gray-950 text-white" value="failure" {% if set.set_type == 'failure' %}selected{% endif %}>Failed</option>
+            </select>
+        </div>
+
+        <div>
+            <span class="block text-blue-400 text-[9px] md:text-xs font-semibold tracking-wide leading-none mb-0.5 md:mb-1">e1RM: {{ set.e1rm }}</span>
+            <span class="block text-green-500 font-bold text-xs">✓ Logged</span>
+        </div>
+
+        <form class="inline m-0 p-0">
+            {% csrf_token %}
+            <button type="button"
+                    hx-post="{% url 'delete_set' set.id %}"
+                    hx-include="closest form"
+                    hx-target="#set-{{ set.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to delete this set? This cannot be undone."
+                    class="text-red-900 hover:text-red-500 text-xl font-black p-1.5 md:p-2 transition duration-200" 
+                    title="Delete Set">
+                &times;
+            </button>
+        </form>
+    </div>
+</div>

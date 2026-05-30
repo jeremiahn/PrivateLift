@@ -10,7 +10,18 @@
         </div>
         <div>
             <h4 class="text-xs md:text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ set.exercise }}</h4>
-            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase">{{ set.set_type|default:"Working Set" }}</p>
+            <div class="mt-0.5">
+                <select hx-post="{% url 'update_set_type' set.id %}?page=dashboard"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-target="#set-row-{{ set.id }}"
+                        hx-swap="outerHTML"
+                        name="set_type"
+                        class="bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-[9px] md:text-[10px] font-bold uppercase rounded border border-gray-200 dark:border-gray-700 px-1 py-0.5 focus:outline-none cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition">
+                    <option class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" value="working" {% if set.set_type == 'working' or not set.set_type %}selected{% endif %}>Working</option>
+                    <option class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" value="warmup" {% if set.set_type == 'warmup' %}selected{% endif %}>Warm Up</option>
+                    <option class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" value="failure" {% if set.set_type == 'failure' %}selected{% endif %}>Failed</option>
+                </select>
+            </div>
         </div>
     </div>
     
