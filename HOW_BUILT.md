@@ -198,6 +198,7 @@ To normalize lifting performance across different weight classes, we added:
 *   **DOTS Score:** Dynamically applies gendered coefficients against bodyweight.
 *   **Wilks Score:** Applies the standard 5th-degree polynomial coefficient.
 *   **Gender-Inclusive Math:** To provide dignity and mathematical equity, for users selecting **Non-Binary** or **Other**, the system automatically calculates the lifter's scores using both male and female equations and averages the results.
+*   **Peak e1RM & Total Sessions Tracking:** Calculates and displays the user's highest estimated 1-Rep Max ever achieved in active training logs (excluding warmups) for Squat, Bench, and Deadlift. This runs alongside a cumulative count of all completed workout sessions, displayed in a sleek inline card.
 
 ---
 
@@ -209,6 +210,7 @@ We built premium features to automate workout logging and inter-set rest times:
 *   **Trigger:** Listens to the HTMX `setLogged` event fired upon a successful set POST.
 *   **Visual Layout:** Renders a floating, glassmorphic progress stopwatch at the bottom right.
 *   **Features:** Provides adjusters (+1m / -1m), play/pause, reset, and visual pulsing indicators when the clock hits zero.
+*   **Preference Toggle:** Includes a customizable `show_rest_timer` database setting in Lifter Profile to toggle the automated auto-popup on or off depending on lifter preference.
 
 ### 2. Automated Warmup Wizard
 *   Calculates a step-by-step checklist based on your target program weight: barbell acclimation (45/135 lbs), nervous activation (55%), muscle preparation (77%), and final single primer (90%).
@@ -229,21 +231,27 @@ We built premium features to automate workout logging and inter-set rest times:
 
 ## Comprehensive Test Suite & Security Auditing
 
-PrivateLift implements four tiers of tests:
+To ensure premium code maintainability, PrivateLift's test suite has been refactored from a monolithic `tests.py` file into a modular package (`lifting/tests/`) composed of domain-specific files. 
 
-### 1. View & Interaction Tests
+PrivateLift implements four tiers of tests spread across these modular files:
+
+### 1. View & Interaction Tests (`test_views.py`)
 *   `LogSetViewTests`: Verifies dynamic HTMX swaps and `HX-Trigger: setLogged` header dispatching.
 *   `DashboardViewTests`: Tests fallback metrics, percentage sliders, and fallback parameters.
-*   `AnalyticsViewTests`: Validates tonnage calculations and verifies warmup sets are excluded from totals.
+*   `AnalyticsViewTests`: Validates tonnage calculations, warmup set exclusions, Peak e1RM benchmarks, and Total Sessions Completed calculations.
+*   `DeleteSetViewTests` & `UpdateSetTypeTests`: Asserts cross-user data isolation and dynamic HTMX endpoints.
 
-### 2. Routine Template Tests
+### 2. Routine Template Tests (`test_routines.py`)
 *   `RoutineTemplateTests`: Validates auto-seeding of the 7 templates on dashboard access, confirms template loads into today's sets, and tests template saving.
 
-### 3. Boundary & Extreme Value Tests
-*   Asserts proper validation on extreme inputs (e.g., negative weights, decimals in integer fields, string injections).
+### 3. Profile & Data Tests (`test_profile.py`, `test_data.py`)
+*   `ProfileSettingsViewTests`: Confirms 1RM calculations, rest timer toggle preference saves, and unauthenticated redirects.
+*   `ExportDataViewTests` & `ImportDataViewTests`: Verifies CSV data extraction, structure validation, and secure data isolation.
 
-### 4. Global Security Audit Tests
-*   `GlobalSecurityTests`: Sweeps all primary URLs (including load, save, delete, and import endpoints) and strictly asserts that unauthorized anonymous users are redirected (302) to the `/accounts/login/` page.
+### 4. Boundary, Security, & Model Tests (`test_security.py`, `test_models.py`)
+*   `BoundaryLimitTests`: Asserts proper validation on extreme inputs (e.g., negative weights, decimals in integer fields, string injections).
+*   `GlobalSecurityTests`: Sweeps all primary URLs and strictly asserts that unauthorized anonymous users are redirected (302) to the `/accounts/login/` page.
+*   `DatabaseModelTests` & `WorkoutSetTests`: Validates model representations and direct ORM integrity.
 
 ### Running the Test Suite
 ```bash
