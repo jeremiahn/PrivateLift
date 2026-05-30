@@ -8,11 +8,11 @@
     <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-red-500 flex flex-col justify-between">
         <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 text-center md:text-left">SQUAT</h3>
         <div class="flex flex-col sm:flex-row justify-between gap-2 md:gap-0">
-            <div>
+            <div class="text-center sm:text-left">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
                 <p class="text-red-400 font-black text-xs sm:text-lg md:text-2xl leading-none whitespace-nowrap">{{ tonnage.SQUAT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div class="text-left sm:text-right">
+            <div class="text-center sm:text-right">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
                 <p class="text-green-400 font-black text-xs sm:text-lg md:text-2xl leading-none whitespace-nowrap">{{ total_reps.SQUAT|default:0 }}</p>
             </div>
@@ -22,11 +22,11 @@
     <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-blue-500 shadow-lg border-t-4 flex flex-col justify-between">
         <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 text-center md:text-left">BENCH</h3>
         <div class="flex flex-col sm:flex-row justify-between gap-2 md:gap-0">
-            <div>
+            <div class="text-center sm:text-left">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
                 <p class="text-blue-400 font-black text-xs sm:text-lg md:text-2xl leading-none whitespace-nowrap">{{ tonnage.BENCH|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div class="text-left sm:text-right">
+            <div class="text-center sm:text-right">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
                 <p class="text-green-400 font-black text-xs sm:text-lg md:text-2xl leading-none whitespace-nowrap">{{ total_reps.BENCH|default:0 }}</p>
             </div>
@@ -36,11 +36,11 @@
     <div class="bg-gray-800 p-2.5 md:p-6 rounded-xl border border-gray-700 shadow-lg border-t-4 border-green-500 flex flex-col justify-between">
         <h3 class="text-[10px] md:text-xl font-black text-white mb-2 md:mb-3 tracking-tight border-b border-gray-700/50 pb-1 md:pb-1.5 text-center md:text-left">DEADLIFT</h3>
         <div class="flex flex-col sm:flex-row justify-between gap-2 md:gap-0">
-            <div>
+            <div class="text-center sm:text-left">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
                 <p class="text-green-400 font-black text-xs sm:text-lg md:text-2xl leading-none whitespace-nowrap">{{ tonnage.DEADLIFT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div class="text-left sm:text-right">
+            <div class="text-center sm:text-right">
                 <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
                 <p class="text-green-400 font-black text-xs sm:text-lg md:text-2xl leading-none whitespace-nowrap">{{ total_reps.DEADLIFT|default:0 }}</p>
             </div>
