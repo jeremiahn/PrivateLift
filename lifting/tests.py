@@ -275,6 +275,68 @@ class ImportDataViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login/'))
 
+    def test_import_csv_missing_file(self):
+        self.client.login(username='importer_a', password='password123')
+        response = self.client.post(self.url)
+        # Missing file should redirect to history
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.endswith(reverse('history')))
+
+    def test_import_csv_invalid_extension(self):
+        self.client.login(username='importer_a', password='password123')
+        csv_file = SimpleUploadedFile("lifting_data.txt", b"dummy content", content_type="text/plain")
+        response = self.client.post(self.url, {'csv_file': csv_file})
+        # Invalid extension should return 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode(), "Please upload a valid CSV file.")
+
+    def test_import_csv_empty_file(self):
+        self.client.login(username='importer_a', password='password123')
+        csv_file = SimpleUploadedFile("lifting_data.csv", b"", content_type="text/csv")
+        response = self.client.post(self.url, {'csv_file': csv_file})
+        # Empty file should return 400 Bad Request
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content.decode(), "CSV file is empty.")
+
+    def test_import_csv_malformed_rows_skipped(self):
+        self.client.login(username='importer_a', password='password123')
+        csv_content = (
+            "Date,Training Week Start,Exercise,Weight (lbs),Reps,Set Tonnage (lbs),Estimated 1RM,Set Type\n"
+            "invalid-date,2026-05-25,Squat,315,5,1575,367,Working\n" # Invalid date
+            "2026-05-25,2026-05-25,Squat,invalid-weight,5,1575,367,Working\n" # Invalid weight
+            "2026-05-25,2026-05-25,Squat,315,5,1575,367,Working\n" # Valid row
+        )
+        csv_file = SimpleUploadedFile("lifting_data.csv", csv_content.encode('utf-8'), content_type="text/csv")
+        response = self.client.post(self.url, {'csv_file': csv_file})
+        
+        self.assertEqual(response.status_code, 302)
+        # Only the valid row should have been imported
+        sets = WorkoutSet.objects.filter(session__user=self.user)
+        self.assertEqual(sets.count(), 1)
+        self.assertEqual(sets.first().weight, 315)
+
+    def test_import_csv_rpe_and_set_type(self):
+        self.client.login(username='importer_a', password='password123')
+        csv_content = (
+            "Date,Training Week Start,Exercise,Weight (lbs),Reps,Set Tonnage (lbs),Estimated 1RM,Set Type,RPE\n"
+            "2026-05-25,2026-05-25,Squat,315,5,1575,367,Warmup,8.5\n"
+            "2026-05-26,2026-05-25,Bench Press,225,5,1125,262,Failure,9\n"
+        )
+        csv_file = SimpleUploadedFile("lifting_data.csv", csv_content.encode('utf-8'), content_type="text/csv")
+        response = self.client.post(self.url, {'csv_file': csv_file})
+        self.assertEqual(response.status_code, 302)
+        
+        sets = WorkoutSet.objects.filter(session__user=self.user)
+        self.assertEqual(sets.count(), 2)
+        
+        squat_set = sets.get(exercise='SQUAT')
+        self.assertEqual(squat_set.set_type, 'warmup')
+        self.assertEqual(squat_set.rpe, 8.5)
+        
+        bench_set = sets.get(exercise='BENCH')
+        self.assertEqual(bench_set.set_type, 'failure')
+        self.assertEqual(bench_set.rpe, 9.0)
+
 class DashboardViewTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -665,6 +727,7 @@ class GlobalSecurityTests(TestCase):
             reverse('analytics'),
             reverse('profile_settings'),
             reverse('export_data'),
+            reverse('import_data'),
         ]
 
         for url in urls_to_protect:
