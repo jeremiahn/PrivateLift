@@ -7,6 +7,7 @@ urlpatterns = [
     path('log-set/', views.log_set, name='log_set'),
     path('profile/', views.profile_settings, name='profile_settings'),
     path('export/', views.export_data, name='export_data'),
+    path('import/', views.import_data, name='import_data'),
     path('history/', views.history, name='history'),
     path('analytics/', views.analytics, name='analytics'),
 

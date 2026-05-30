@@ -1,6 +1,7 @@
 
 # Create your models here.
 
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -43,7 +44,7 @@ def save_or_create_user_profile(sender, instance, created, **kwargs):
 
 class WorkoutSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=date.today)
     notes = models.TextField(blank=True, null=True, help_text="General session notes (e.g., 'Felt sluggish', 'Slept poor')")
 
     def __str__(self):
