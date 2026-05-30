@@ -14,6 +14,11 @@ urlpatterns = [
     path('delete-set/<int:set_id>/', views.delete_set, name='delete_set'),
     path('update-set-type/<int:set_id>/', views.update_set_type, name='update_set_type'),
 
+    # Custom Routine Templates
+    path('load-template/', views.load_template, name='load_template'),
+    path('save-template/', views.save_template, name='save_template'),
+    path('delete-template/', views.delete_template, name='delete_template'),
+
     # Built-in Django password change view
     path('password/', auth_views.PasswordChangeView.as_view(
         template_name='lifting/password_change.html',

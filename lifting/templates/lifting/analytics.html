@@ -4,7 +4,22 @@
 
 {% block content %}
 <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg mb-8 md:mb-10 transition-all duration-300">
-    <h2 class="text-xl font-black text-gray-900 dark:text-white mb-6 uppercase tracking-tight">Lifetime Totals</h2>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 gap-3">
+        <div>
+            <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight leading-none">Lifetime Totals</h2>
+            <p class="text-[10px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1.5 leading-none">Volume and lifts accumulated</p>
+        </div>
+        <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 self-stretch sm:self-auto justify-between sm:justify-start">
+            <div class="text-left sm:text-right pr-2 border-r border-gray-200 dark:border-gray-800">
+                <span class="text-[8px] uppercase font-black text-gray-400 dark:text-gray-500 block leading-none mb-1">DOTS</span>
+                <span class="text-xs md:text-sm font-black text-indigo-500 dark:text-indigo-400 block leading-none">{{ profile.get_dots_score }}</span>
+            </div>
+            <div class="text-right pl-1">
+                <span class="text-[8px] uppercase font-black text-gray-400 dark:text-gray-500 block leading-none mb-1">Wilks</span>
+                <span class="text-xs md:text-sm font-black text-purple-500 dark:text-purple-400 block leading-none">{{ profile.get_wilks_score }}</span>
+            </div>
+        </div>
+    </div>
     <div class="space-y-3 md:space-y-4">
         <!-- SQUAT -->
         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-red-500 flex justify-between items-center">

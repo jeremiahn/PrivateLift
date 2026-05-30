@@ -95,16 +95,28 @@
                             <span class="text-base sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-none">{{ weight }}</span>
                             <span class="text-[8px] md:text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-0.5 md:ml-1">lbs</span>
                         </div>
-                        <button type="button" 
-                                onclick="openPlateCalculator({{ weight }}, '{{ exercise|escapejs }}')"
-                                class="text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 transition-colors p-1 -mr-1 md:-mr-2 rounded-md focus:outline-none"
-                                title="Plate Calculator">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 md:h-5.5 md:w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <circle cx="12" cy="12" r="9" />
-                                <circle cx="12" cy="12" r="3" />
-                                <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
-                            </svg>
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            <!-- Warmup Wizard Button -->
+                            <button type="button" 
+                                    onclick="openWarmupWizard({{ weight }}, '{{ exercise|escapejs }}')"
+                                    class="text-gray-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400 transition-colors p-1 rounded-md focus:outline-none"
+                                    title="Warmup Wizard">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 md:h-5.5 md:w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </button>
+                            <!-- Plate Calculator Button -->
+                            <button type="button" 
+                                    onclick="openPlateCalculator({{ weight }}, '{{ exercise|escapejs }}')"
+                                    class="text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400 transition-colors p-1 rounded-md focus:outline-none"
+                                    title="Plate Calculator">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 md:h-5.5 md:w-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <circle cx="12" cy="12" r="3" />
+                                    <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,7 +126,38 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-10 items-start">
     
-    <div class="lg:col-span-1">
+    <div class="lg:col-span-1 space-y-4 md:space-y-6">
+        
+        <!-- Workout Routines / Builder Panel -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-tight border-b border-gray-100 dark:border-gray-700 pb-2">Workout Routines</h3>
+            
+            <form method="POST" action="{% url 'load_template' %}" class="space-y-3">
+                {% csrf_token %}
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Load Routine Template</label>
+                <div class="flex gap-2">
+                    <select name="template_id" class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2.5 py-2 text-gray-900 dark:text-white font-bold text-xs focus:ring-2 focus:ring-blue-500 outline-none h-9">
+                        {% for t in templates %}
+                            <option value="{{ t.id }}">{{ t.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-black text-[10px] px-3.5 py-2 rounded-lg uppercase tracking-wider transition-colors shadow-md shadow-blue-500/10">Load</button>
+                </div>
+            </form>
+            
+            {% if todays_sets.exists %}
+            <div class="border-t border-gray-100 dark:border-gray-700/50 my-4"></div>
+            <form method="POST" action="{% url 'save_template' %}" class="space-y-3">
+                {% csrf_token %}
+                <label class="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Save Today's Session</label>
+                <div class="flex gap-2">
+                    <input type="text" name="template_name" placeholder="Routine Name..." required class="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2.5 py-2 text-gray-900 dark:text-white font-bold text-xs focus:ring-2 focus:ring-blue-500 outline-none h-9">
+                    <button type="submit" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-black text-[10px] px-3.5 py-2 rounded-lg uppercase tracking-wider transition-colors">Save</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+
         <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700 md:sticky md:top-8">
             <h3 class="text-base md:text-lg font-bold text-gray-900 dark:text-white mb-4 md:mb-6 uppercase tracking-tight border-b border-gray-100 dark:border-gray-700 pb-2">Log New Set</h3>
             <form hx-post="{% url 'log_set' %}" hx-target="#set-list" hx-swap="afterbegin" class="space-y-4 md:space-y-5">
@@ -255,6 +298,71 @@
                 <div id="plateListContainer" class="space-y-2">
                     <!-- List items inserted here -->
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rest Timer Banner (Floating bottom right, glassmorphism) -->
+<div id="restTimerBanner" class="fixed bottom-24 right-4 md:right-10 z-40 hidden max-w-sm w-[280px] md:w-[320px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-10 opacity-0 flex flex-col gap-3">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            <span class="text-[9px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">Rest Timer</span>
+        </div>
+        <button onclick="closeRestTimer()" class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+    <div class="flex items-baseline justify-between">
+        <span id="timerCountdown" class="text-3xl font-black text-gray-900 dark:text-white leading-none">03:00</span>
+        <div class="flex gap-1.5">
+            <button onclick="adjustTimer(60)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-850 dark:hover:bg-gray-700 text-[10px] font-black px-2 py-1 rounded-md text-gray-700 dark:text-gray-300 transition-colors">+1m</button>
+            <button onclick="adjustTimer(-60)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-850 dark:hover:bg-gray-700 text-[10px] font-black px-2 py-1 rounded-md text-gray-700 dark:text-gray-300 transition-colors">-1m</button>
+        </div>
+    </div>
+    <!-- Timer progress bar -->
+    <div class="w-full bg-gray-100 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden">
+        <div id="timerProgressBar" class="bg-blue-500 h-full w-full transition-all duration-1000 ease-linear" style="width: 100%;"></div>
+    </div>
+    <div class="flex gap-2">
+        <button id="timerPlayPauseBtn" onclick="toggleTimer()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black py-2 rounded-lg transition-colors uppercase tracking-widest leading-none">Pause</button>
+        <button onclick="resetTimer(180)" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-[10px] font-black px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 transition-colors uppercase tracking-widest leading-none">Reset</button>
+    </div>
+</div>
+
+<!-- Warmup Wizard Modal -->
+<div id="warmupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeWarmupWizard()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-sm w-full overflow-hidden transform scale-95 opacity-0 transition-all duration-300 z-10" id="warmupContent">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-4 md:p-5 border-b border-gray-100 dark:border-gray-700/50">
+            <div>
+                <h3 class="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1.5" id="warmupExLabel">SQUAT</h3>
+                <h2 class="text-lg font-black text-gray-900 dark:text-white leading-none">Warmup Wizard</h2>
+            </div>
+            <button onclick="closeWarmupWizard()" class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Body -->
+        <div class="p-4 md:p-6 space-y-4">
+            <p class="text-[11px] text-gray-500 leading-normal">
+                Follow this automated weight checklist to acclimate your nervous system before starting your working sets:
+            </p>
+            <div id="warmupListContainer" class="space-y-2.5">
+                <!-- Dynamic warmup rows inserted here -->
             </div>
         </div>
     </div>
@@ -409,7 +517,162 @@
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closePlateCalculator();
+            closeWarmupWizard();
         }
     });
+
+    // --- AUTOMATED REST TIMER SCRIPT ---
+    let timerInterval = null;
+    let timeRemaining = 180;
+    let totalTimerDuration = 180;
+    let isTimerPaused = false;
+    
+    document.body.addEventListener('setLogged', () => {
+        // Automatically trigger 3 minutes countdown when a set is logged
+        startRestTimer(180);
+    });
+    
+    function startRestTimer(duration) {
+        clearInterval(timerInterval);
+        timeRemaining = duration;
+        totalTimerDuration = duration;
+        isTimerPaused = false;
+        
+        const banner = document.getElementById('restTimerBanner');
+        banner.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            banner.classList.remove('translate-y-10', 'opacity-0');
+            banner.classList.add('translate-y-0', 'opacity-100');
+        });
+        
+        document.getElementById('timerPlayPauseBtn').innerText = 'Pause';
+        updateTimerDisplay();
+        
+        timerInterval = setInterval(() => {
+            if (!isTimerPaused) {
+                timeRemaining--;
+                updateTimerDisplay();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    flashTimerComplete();
+                }
+            }
+        }, 1000);
+    }
+    
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeRemaining / 60);
+        const secs = timeRemaining % 60;
+        document.getElementById('timerCountdown').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        const pct = (timeRemaining / totalTimerDuration) * 100;
+        document.getElementById('timerProgressBar').style.width = `${pct}%`;
+    }
+    
+    function toggleTimer() {
+        isTimerPaused = !isTimerPaused;
+        document.getElementById('timerPlayPauseBtn').innerText = isTimerPaused ? 'Resume' : 'Pause';
+    }
+    
+    function adjustTimer(amount) {
+        timeRemaining = Math.max(0, timeRemaining + amount);
+        totalTimerDuration = Math.max(timeRemaining, totalTimerDuration + (amount > 0 ? amount : 0));
+        updateTimerDisplay();
+    }
+    
+    function resetTimer(duration) {
+        startRestTimer(duration);
+    }
+    
+    function closeRestTimer() {
+        const banner = document.getElementById('restTimerBanner');
+        banner.classList.remove('translate-y-0', 'opacity-100');
+        banner.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => {
+            banner.classList.add('hidden');
+            clearInterval(timerInterval);
+        }, 300);
+    }
+    
+    function flashTimerComplete() {
+        const banner = document.getElementById('restTimerBanner');
+        let flashes = 6;
+        const flashInterval = setInterval(() => {
+            if (flashes % 2 === 0) {
+                banner.classList.add('border-blue-500', 'bg-blue-50/95', 'dark:bg-blue-950/40');
+            } else {
+                banner.classList.remove('border-blue-500', 'bg-blue-50/95', 'dark:bg-blue-950/40');
+            }
+            flashes--;
+            if (flashes < 0) {
+                clearInterval(flashInterval);
+            }
+        }, 250);
+    }
+
+    // --- WARMUP WIZARD SCRIPT ---
+    function openWarmupWizard(workingWeight, exercise) {
+        const modal = document.getElementById('warmupModal');
+        const content = document.getElementById('warmupContent');
+        const exLabel = document.getElementById('warmupExLabel');
+        const listContainer = document.getElementById('warmupListContainer');
+        
+        exLabel.innerText = exercise.toUpperCase();
+        
+        const emptyBar = workingWeight >= 135 ? 135 : 45;
+        const w55 = Math.round((workingWeight * 0.55) / 5) * 5;
+        const w77 = Math.round((workingWeight * 0.77) / 5) * 5;
+        const w90 = Math.round((workingWeight * 0.90) / 5) * 5;
+        
+        const warmups = [
+            { name: 'Bar acclimation', weight: emptyBar, reps: 5, pct: emptyBar === 135 ? '135 lbs' : '45 lbs' },
+            { name: 'Nervous activation', weight: w55, reps: 5, pct: '55%' },
+            { name: 'Muscle preparation', weight: w77, reps: 3, pct: '77%' },
+            { name: 'Final single primer', weight: w90, reps: 1, pct: '90%' }
+        ];
+        
+        let html = '';
+        warmups.forEach((w) => {
+            html += `
+                <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-150 dark:border-gray-800">
+                    <div class="flex items-center gap-2.5">
+                        <input type="checkbox" class="h-4.5 w-4.5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 bg-white dark:bg-gray-850">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black text-gray-700 dark:text-gray-200">${w.weight} lbs</span>
+                            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">${w.reps} reps | ${w.name} (${w.pct})</span>
+                        </div>
+                    </div>
+                    <button onclick="closeWarmupWizard(); setTimeout(() => openPlateCalculator(${w.weight}, '${exercise}'), 300)" 
+                            class="text-gray-400 hover:text-blue-500 transition-colors p-1"
+                            title="Plate Calculator">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="9" />
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+        });
+        
+        listContainer.innerHTML = html;
+        
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        });
+    }
+    
+    function closeWarmupWizard() {
+        const modal = document.getElementById('warmupModal');
+        const content = document.getElementById('warmupContent');
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
 </script>
 {% endblock %}
