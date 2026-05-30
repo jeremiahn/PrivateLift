@@ -9,13 +9,15 @@ The application features a modern, mobile-friendly interface designed for fat-fi
 ## ✨ Features
 
 *   **Big Three Dashboard**: Track your Squat, Bench Press, and Deadlift maxes on a unified, high-contrast dashboard.
-*   **Gym-Friendly UX**: Clean, modern dark-mode interface with extra-large button targets, optimized for sweaty hands and quick logging between sets.
-*   **Dynamic Program Generator**: Input an intensity percentage (e.g. 85%) to instantly calculate working sets rounded to the nearest 5 lbs.
-*   **Real-time Set Logging**: Add or remove sets dynamically without a full page refresh, utilizing HTMX partial page updates.
+*   **Visual Barbell Plate Calculator**: Click the plate icon next to programmed weights to trigger a beautiful modal breakdown. View a loaded barbell sleeve mockup with color-coded plates (45s, 25s, 10s, 5s, 2.5s) per side and a detailed numeric checklist.
+*   **RPE Logging & Badge Indicators**: Expose optional RPE selectors (6-10 scale) when logging, backed by robust validation, and view soft color-coordinated RPE badges next to logged sets on the dashboard and history pages.
 *   **Estimated 1RM (e1RM)**: Uses the **Epley Formula** to automatically calculate your estimated 1RM for every working set.
+*   **Interactive e1RM Progression Charts**: Premium, responsive line charting on the Stats page. Shows strength progress over time for Squat, Bench, and Deadlift, adapting dynamically to system theme settings with interactive tooltips and lift-specific color branding.
+*   **Gym-Friendly UX & Auto-Theme Toggling**: Sleek, high-contrast mobile layout with responsive system theme detection and an on-demand Light/Dark mode toggle switch on the Settings page.
 *   **Analytics & Lifetime Tonnage**: Track your lifetime accumulated training volume (tonnage) and reps per exercise, with detailed weekly volume breakdowns.
 *   **Data Export**: Download your entire lifting history in a clean, standard CSV format.
 *   **DevOps Ready**: Pre-packaged with Docker Compose, Gunicorn, and Caddy. Uses automated merge attributes to protect environments between sandbox and production.
+
 
 ---
 
