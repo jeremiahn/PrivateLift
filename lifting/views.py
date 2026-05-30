@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from datetime import date
 from .models import LifterProfile, WorkoutSession, WorkoutSet
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Max
 from django.db.models.functions import TruncWeek
 from django.views.decorators.http import require_POST
+import json
 
 @login_required
 def dashboard(request):
@@ -41,12 +42,14 @@ def log_set(request):
             weight = int(request.POST.get("weight"))
             reps = int(request.POST.get("reps"))
             set_type = request.POST.get('set_type', 'working')
-            if weight < 0 or reps <= 0 or reps > 100:
+            rpe_val = request.POST.get('rpe')
+            rpe = float(rpe_val) if rpe_val else None
+            if weight < 0 or reps <= 0 or reps > 100 or (rpe is not None and (rpe < 1.0 or rpe > 10.0)):
                 return HttpResponse("Invalid numbers.", status=400)
         except (TypeError, ValueError):
             return HttpResponse("Invalid numbers.", status=400)
         session, created = WorkoutSession.objects.get_or_create(user=request.user, date=date.today())
-        new_set = WorkoutSet.objects.create(session=session, exercise=exercise, weight=weight, reps=reps, completed=True, set_type=set_type)
+        new_set = WorkoutSet.objects.create(session=session, exercise=exercise, weight=weight, reps=reps, completed=True, set_type=set_type, rpe=rpe)
         response = render(request, 'lifting/partials/set_row.html', {'set': new_set})
         response['HX-Trigger'] = 'setLogged'
         return response
@@ -152,10 +155,49 @@ def analytics(request):
             tonnage[exercise_key] += (workout_set.weight * workout_set.reps)
             lifetime_reps[exercise_key] += workout_set.reps
             
+    # e1RM Progression Chart Data
+    e1rm_raw = user_sets.filter(e1rm__isnull=False).values('session__date', 'exercise') \
+                        .annotate(max_e1rm=Max('e1rm')) \
+                        .order_by('session__date')
+
+    dates_set = sorted(list(set(entry['session__date'] for entry in e1rm_raw if entry['session__date'])))
+    dates_str = [d.strftime('%Y-%m-%d') for d in dates_set]
+
+    squat_data = [None] * len(dates_set)
+    bench_data = [None] * len(dates_set)
+    deadlift_data = [None] * len(dates_set)
+
+    date_to_idx = {d: i for i, d in enumerate(dates_set)}
+
+    for entry in e1rm_raw:
+        d = entry['session__date']
+        if not d:
+            continue
+        idx = date_to_idx[d]
+        ex_key = entry['exercise'].upper()
+        if 'BENCH' in ex_key:
+            ex_key = 'BENCH'
+        
+        val = entry['max_e1rm']
+        if ex_key == 'SQUAT':
+            squat_data[idx] = val
+        elif ex_key == 'BENCH':
+            bench_data[idx] = val
+        elif ex_key == 'DEADLIFT':
+            deadlift_data[idx] = val
+
+    e1rm_chart_data = {
+        'labels': dates_str,
+        'squat': squat_data,
+        'bench': bench_data,
+        'deadlift': deadlift_data,
+    }
+
     context = {
         'tonnage': tonnage, 
         'total_reps': lifetime_reps,
         'weekly_breakdown': weekly_breakdown,
+        'e1rm_chart_data_json': json.dumps(e1rm_chart_data),
     }
     return render(request, 'lifting/analytics.html', context)
 

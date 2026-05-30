@@ -21,8 +21,10 @@
             </select>
         </div>
 
-        <div>
-            <span class="block text-blue-600 dark:text-blue-400 text-[9px] md:text-xs font-semibold tracking-wide leading-none mb-0.5 md:mb-1">e1RM: {{ set.e1rm }}</span>
+        <div class="flex flex-col items-end justify-center">
+            <span class="block text-blue-600 dark:text-blue-400 text-[9px] md:text-xs font-semibold tracking-wide leading-none mb-1">
+                e1RM: {{ set.e1rm }}{% if set.rpe %}<span class="text-purple-600 dark:text-purple-400 ml-1 font-bold text-[8px] md:text-[10px] bg-purple-50 dark:bg-purple-950/40 px-1 py-0.5 rounded border border-purple-200 dark:border-purple-900/30">@{{ set.rpe|floatformat:"-1" }}</span>{% endif %}
+            </span>
             <span class="block text-green-500 font-bold text-xs">✓ Logged</span>
         </div>
 
