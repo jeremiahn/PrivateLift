@@ -3,101 +3,101 @@
 {% block title %}Training Analytics | PrivateLift{% endblock %}
 
 {% block content %}
-<h2 class="text-xl font-black text-white mb-6 uppercase tracking-tight">Lifetime Totals</h2>
+<h2 class="text-xl font-black text-gray-900 dark:text-white mb-6 uppercase tracking-tight">Lifetime Totals</h2>
 <div class="space-y-3 md:space-y-4 mb-8 md:mb-10">
     <!-- SQUAT -->
-    <div class="bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-700 shadow-lg border-l-4 border-red-500 flex justify-between items-center">
+    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg border-l-4 border-red-500 flex justify-between items-center">
         <div class="w-1/3 text-left">
             <h3 class="text-xs md:text-sm font-black text-red-500 uppercase tracking-wider">SQUAT</h3>
         </div>
         <div class="w-1/3 text-center">
-            <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
+            <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
             <p class="text-red-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ tonnage.SQUAT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
         </div>
         <div class="w-1/3 text-right">
-            <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
+            <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
             <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ total_reps.SQUAT|default:0 }}</p>
         </div>
     </div>
 
     <!-- BENCH -->
-    <div class="bg-gray-800 p-4 md:p-6 rounded-xl border border-blue-500 shadow-lg border-l-4 flex justify-between items-center">
+    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-blue-200 dark:border-blue-500 shadow-sm dark:shadow-lg border-l-4 flex justify-between items-center">
         <div class="w-1/3 text-left">
             <h3 class="text-xs md:text-sm font-black text-blue-500 uppercase tracking-wider">BENCH</h3>
         </div>
         <div class="w-1/3 text-center">
-            <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
+            <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
             <p class="text-blue-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ tonnage.BENCH|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
         </div>
         <div class="w-1/3 text-right">
-            <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
+            <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
             <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ total_reps.BENCH|default:0 }}</p>
         </div>
     </div>
 
     <!-- DEADLIFT -->
-    <div class="bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-700 shadow-lg border-l-4 border-green-500 flex justify-between items-center">
+    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg border-l-4 border-green-500 flex justify-between items-center">
         <div class="w-1/3 text-left">
             <h3 class="text-xs md:text-sm font-black text-green-500 uppercase tracking-wider">DEADLIFT</h3>
         </div>
         <div class="w-1/3 text-center">
-            <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
+            <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
             <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ tonnage.DEADLIFT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
         </div>
         <div class="w-1/3 text-right">
-            <p class="text-[8px] md:text-xs text-gray-400 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
+            <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
             <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ total_reps.DEADLIFT|default:0 }}</p>
         </div>
     </div>
 </div>
 
-<hr class="border-gray-700/50 mb-6 md:mb-10">
+<hr class="border-gray-200 dark:border-gray-700/50 mb-6 md:mb-10">
 
 <div class="space-y-4 md:space-y-6">
-    <h2 class="text-xl font-black text-white uppercase tracking-tight">Weekly Volume Breakdown</h2>
+    <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Weekly Volume Breakdown</h2>
     
     {% for week, lifts in weekly_breakdown.items %}
-        <details class="group bg-gray-800 rounded-xl border border-gray-700 shadow-lg transition-all duration-300" {% if forloop.first %}open{% endif %}>
+        <details class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm dark:shadow-lg transition-all duration-300" {% if forloop.first %}open{% endif %}>
             <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center justify-between p-4 md:p-6 cursor-pointer select-none focus:outline-none">
-                <span class="text-gray-200 text-xs md:text-sm font-black uppercase tracking-wider">
+                <span class="text-gray-700 dark:text-gray-200 text-xs md:text-sm font-black uppercase tracking-wider">
                     Week of {{ week|date:"M j, Y" }}
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 transform group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400 transform group-open:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
             </summary>
             
-            <div class="p-4 md:p-6 pt-0 border-t border-gray-700/50">
+            <div class="p-4 md:p-6 pt-0 border-t border-gray-200 dark:border-gray-700/50">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div class="bg-gray-900 p-4 rounded-xl border-l-4 border-red-500 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 border-l-4 border-red-500 flex justify-between items-center">
                         <div>
-                            <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Squat Volume</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block">Squat Volume</span>
                             <span class="text-red-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.SQUAT.tonnage|default:0 }} lbs</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
                             <span class="text-green-400 font-black text-base md:text-lg block">{{ lifts.SQUAT.reps|default:0 }}</span>
                         </div>
                     </div>
                     
-                    <div class="bg-gray-900 p-4 rounded-xl border-l-4 border-blue-500 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 border-l-4 border-blue-500 flex justify-between items-center">
                         <div>
-                            <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Bench Volume</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block">Bench Volume</span>
                             <span class="text-blue-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.BENCH.tonnage|default:0 }} lbs</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
                             <span class="text-green-400 font-black text-base md:text-lg block">{{ lifts.BENCH.reps|default:0 }}</span>
                         </div>
                     </div>
                     
-                    <div class="bg-gray-900 p-4 rounded-xl border-l-4 border-green-500 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 border-l-4 border-green-500 flex justify-between items-center">
                         <div>
-                            <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block">Deadlift Volume</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block">Deadlift Volume</span>
                             <span class="text-green-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.DEADLIFT.tonnage|default:0 }} lbs</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-[10px] text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold block uppercase tracking-wider leading-none mb-0.5">Reps</span>
                             <span class="text-green-400 font-black text-base md:text-lg block">{{ lifts.DEADLIFT.reps|default:0 }}</span>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
             </div>
         </details>
     {% empty %}
-        <div class="bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-700 text-center text-gray-500 italic text-sm">
+        <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400 italic text-sm">
             No weekly data available yet.
         </div>
     {% endfor %}

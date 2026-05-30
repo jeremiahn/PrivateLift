@@ -1,7 +1,7 @@
-<div id="set-{{ set.id }}" class="flex justify-between items-center bg-gray-900 p-3 md:p-4 rounded-lg border border-gray-700 transition">
+<div id="set-{{ set.id }}" class="flex justify-between items-center bg-gray-50 dark:bg-gray-900 p-3 md:p-4 rounded-lg border border-gray-200 dark:border-gray-800 transition">
     <div class="flex flex-col">
-        <span class="text-gray-300 font-bold text-base md:text-lg leading-tight">{{ set.exercise }}</span>
-        <span class="text-gray-500 text-xs md:text-sm font-normal">{{ set.weight }} lbs x {{ set.reps }} reps</span>
+        <span class="text-gray-800 dark:text-gray-300 font-bold text-base md:text-lg leading-tight">{{ set.exercise }}</span>
+        <span class="text-gray-500 dark:text-gray-400 text-xs md:text-sm font-normal">{{ set.weight }} lbs x {{ set.reps }} reps</span>
     </div>
 
     <div class="flex items-center gap-2 md:gap-4 text-right">
@@ -12,17 +12,17 @@
                     hx-swap="outerHTML"
                     name="set_type"
                     class="px-1.5 py-0.5 md:px-2 md:py-1 text-[8px] md:text-[10px] font-bold uppercase rounded border cursor-pointer focus:outline-none transition
-                        {% if set.set_type == 'warmup' %}bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600
-                        {% elif set.set_type == 'failure' %}bg-red-900/50 text-red-300 border-red-800 hover:bg-red-900/70
-                        {% else %}bg-blue-900/30 text-blue-300 border-blue-900/50 hover:bg-blue-900/50{% endif %}">
-                <option class="bg-gray-950 text-white" value="working" {% if set.set_type == 'working' or not set.set_type %}selected{% endif %}>Working</option>
-                <option class="bg-gray-950 text-white" value="warmup" {% if set.set_type == 'warmup' %}selected{% endif %}>Warm Up</option>
-                <option class="bg-gray-950 text-white" value="failure" {% if set.set_type == 'failure' %}selected{% endif %}>Failed</option>
+                        {% if set.set_type == 'warmup' %}bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600
+                        {% elif set.set_type == 'failure' %}bg-red-50 text-red-700 border-red-200 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-900/50
+                        {% else %}bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-900/50 dark:hover:bg-blue-900/40{% endif %}">
+                <option class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" value="working" {% if set.set_type == 'working' or not set.set_type %}selected{% endif %}>Working</option>
+                <option class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" value="warmup" {% if set.set_type == 'warmup' %}selected{% endif %}>Warm Up</option>
+                <option class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" value="failure" {% if set.set_type == 'failure' %}selected{% endif %}>Failed</option>
             </select>
         </div>
 
         <div>
-            <span class="block text-blue-400 text-[9px] md:text-xs font-semibold tracking-wide leading-none mb-0.5 md:mb-1">e1RM: {{ set.e1rm }}</span>
+            <span class="block text-blue-600 dark:text-blue-400 text-[9px] md:text-xs font-semibold tracking-wide leading-none mb-0.5 md:mb-1">e1RM: {{ set.e1rm }}</span>
             <span class="block text-green-500 font-bold text-xs">✓ Logged</span>
         </div>
 
