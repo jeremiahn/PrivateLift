@@ -170,3 +170,18 @@ def delete_set(request, set_id):
     
     # Return the empty response to trigger the HTMX removal
     return HttpResponse("")
+
+@login_required
+@require_POST
+def update_set_type(request, set_id):
+    workout_set = get_object_or_404(WorkoutSet, id=set_id, session__user=request.user)
+    new_type = request.POST.get('set_type')
+    if new_type in ['working', 'warmup', 'failure']:
+        workout_set.set_type = new_type
+        workout_set.save()
+    
+    page = request.GET.get('page', 'dashboard')
+    if page == 'history':
+        return render(request, 'lifting/partials/history_set_row.html', {'set': workout_set})
+    else:
+        return render(request, 'lifting/partials/set_row.html', {'set': workout_set})

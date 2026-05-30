@@ -11,6 +11,7 @@ urlpatterns = [
     path('analytics/', views.analytics, name='analytics'),
 
     path('delete-set/<int:set_id>/', views.delete_set, name='delete_set'),
+    path('update-set-type/<int:set_id>/', views.update_set_type, name='update_set_type'),
 
     # Built-in Django password change view
     path('password/', auth_views.PasswordChangeView.as_view(
