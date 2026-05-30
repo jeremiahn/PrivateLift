@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from datetime import date, datetime
-from .models import LifterProfile, WorkoutSession, WorkoutSet
+from .models import LifterProfile, WorkoutSession, WorkoutSet, WorkoutTemplate, WorkoutTemplateExercise
 from django.db.models import Sum, F, Max
 from django.db.models.functions import TruncWeek
 from django.views.decorators.http import require_POST
@@ -20,6 +20,24 @@ def dashboard(request):
         p_val = 85
     working_weights = profile.get_weekly_program(percentage)
 
+    # Auto-seed standard templates if they don't exist yet
+    templates = WorkoutTemplate.objects.filter(user=request.user)
+    if not templates.exists():
+        t1 = WorkoutTemplate.objects.create(user=request.user, name="Powerlifting Big Three", description="Squat, Bench, and Deadlift target weights.")
+        WorkoutTemplateExercise.objects.create(template=t1, exercise="SQUAT", weight=working_weights['squat'], reps=5, set_type="working", order=0)
+        WorkoutTemplateExercise.objects.create(template=t1, exercise="BENCH", weight=working_weights['bench'], reps=5, set_type="working", order=1)
+        WorkoutTemplateExercise.objects.create(template=t1, exercise="DEADLIFT", weight=working_weights['deadlift'], reps=5, set_type="working", order=2)
+        
+        t2 = WorkoutTemplate.objects.create(user=request.user, name="Squat Focus (3x5)", description="Triple working sets for leg development.")
+        for i in range(3):
+            WorkoutTemplateExercise.objects.create(template=t2, exercise="SQUAT", weight=working_weights['squat'], reps=5, set_type="working", order=i)
+            
+        t3 = WorkoutTemplate.objects.create(user=request.user, name="Bench Press Volume (3x5)", description="Triple working sets for upper body pushing power.")
+        for i in range(3):
+            WorkoutTemplateExercise.objects.create(template=t3, exercise="BENCH", weight=working_weights['bench'], reps=5, set_type="working", order=i)
+        
+        templates = WorkoutTemplate.objects.filter(user=request.user)
+
     # Fetch today's sets and order them newest-first to match your HTMX layout
     todays_sets = WorkoutSet.objects.filter(
         session__user=request.user, 
@@ -30,7 +48,9 @@ def dashboard(request):
         'profile': profile, 
         'weights': working_weights, 
         'current_p': int(p_val),
-        'todays_sets': todays_sets
+        'todays_sets': todays_sets,
+        'templates': templates,
+        'today': date.today(),
     }
     return render(request, 'lifting/dashboard.html', context)
 
@@ -63,6 +83,19 @@ def profile_settings(request):
             profile.squat_1rm = int(request.POST.get("squat"))
             profile.bench_1rm = int(request.POST.get("bench"))
             profile.deadlift_1rm = int(request.POST.get("deadlift"))
+            
+            bw_val = request.POST.get("body_weight")
+            if bw_val:
+                profile.body_weight = float(bw_val)
+                
+            gender_val = request.POST.get("gender")
+            if gender_val:
+                profile.gender = gender_val
+                
+            formula_val = request.POST.get("formula_preference")
+            if formula_val:
+                profile.formula_preference = formula_val
+                
             profile.save()
             return redirect('dashboard')
         except (TypeError, ValueError):
@@ -331,6 +364,7 @@ def analytics(request):
         'tonnage': tonnage, 
         'total_reps': lifetime_reps,
         'weekly_breakdown': weekly_breakdown,
+        'profile': request.user.lifterprofile,
     }
     return render(request, 'lifting/analytics.html', context)
 
@@ -360,3 +394,64 @@ def update_set_type(request, set_id):
         return render(request, 'lifting/partials/history_set_row.html', {'set': workout_set})
     else:
         return render(request, 'lifting/partials/set_row.html', {'set': workout_set})
+
+@login_required
+@require_POST
+def load_template(request):
+    template_id = request.POST.get('template_id')
+    if not template_id:
+        return redirect('dashboard')
+    try:
+        template = WorkoutTemplate.objects.get(id=template_id, user=request.user)
+    except WorkoutTemplate.DoesNotExist:
+        return HttpResponse("Template not found", status=404)
+    
+    session, created = WorkoutSession.objects.get_or_create(user=request.user, date=date.today())
+    for te in template.exercises.all():
+        WorkoutSet.objects.create(
+            session=session,
+            exercise=te.exercise,
+            weight=te.weight,
+            reps=te.reps,
+            set_type=te.set_type,
+            completed=True
+        )
+    return redirect('dashboard')
+
+@login_required
+@require_POST
+def save_template(request):
+    template_name = request.POST.get('template_name', '').strip()
+    if not template_name:
+        template_name = f"Routine {date.today().strftime('%Y-%m-%d')}"
+    
+    todays_sets = WorkoutSet.objects.filter(
+        session__user=request.user,
+        session__date=date.today()
+    ).order_by('id')
+    
+    if not todays_sets.exists():
+        return HttpResponse("No sets to save.", status=400)
+        
+    template = WorkoutTemplate.objects.create(user=request.user, name=template_name)
+    for i, s in enumerate(todays_sets):
+        WorkoutTemplateExercise.objects.create(
+            template=template,
+            exercise=s.exercise,
+            weight=s.weight,
+            reps=s.reps,
+            set_type=s.set_type,
+            order=i
+        )
+    return redirect('dashboard')
+
+@login_required
+@require_POST
+def delete_template(request):
+    template_id = request.POST.get('template_id')
+    try:
+        template = WorkoutTemplate.objects.get(id=template_id, user=request.user)
+        template.delete()
+    except WorkoutTemplate.DoesNotExist:
+        pass
+    return redirect('dashboard')
