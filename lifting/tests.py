@@ -862,9 +862,9 @@ class RoutineTemplateTests(TestCase):
         response = self.client.get(reverse('dashboard'))
         self.assertEqual(response.status_code, 200)
         
-        # Verify 3 templates are seeded automatically
+        # Verify 7 templates are seeded automatically
         templates = WorkoutTemplate.objects.filter(user=self.user)
-        self.assertEqual(templates.count(), 3)
+        self.assertEqual(templates.count(), 7)
         self.assertTrue(templates.filter(name="Powerlifting Big Three").exists())
 
     def test_load_template(self):

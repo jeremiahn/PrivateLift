@@ -21,22 +21,59 @@ def dashboard(request):
     working_weights = profile.get_weekly_program(percentage)
 
     # Auto-seed standard templates if they don't exist yet
-    templates = WorkoutTemplate.objects.filter(user=request.user)
-    if not templates.exists():
+    if not WorkoutTemplate.objects.filter(user=request.user, name="Powerlifting Big Three").exists():
+        # 1. Powerlifting Big Three
         t1 = WorkoutTemplate.objects.create(user=request.user, name="Powerlifting Big Three", description="Squat, Bench, and Deadlift target weights.")
         WorkoutTemplateExercise.objects.create(template=t1, exercise="SQUAT", weight=working_weights['squat'], reps=5, set_type="working", order=0)
         WorkoutTemplateExercise.objects.create(template=t1, exercise="BENCH", weight=working_weights['bench'], reps=5, set_type="working", order=1)
         WorkoutTemplateExercise.objects.create(template=t1, exercise="DEADLIFT", weight=working_weights['deadlift'], reps=5, set_type="working", order=2)
         
+        # 2. Squat Focus (3x5)
         t2 = WorkoutTemplate.objects.create(user=request.user, name="Squat Focus (3x5)", description="Triple working sets for leg development.")
         for i in range(3):
             WorkoutTemplateExercise.objects.create(template=t2, exercise="SQUAT", weight=working_weights['squat'], reps=5, set_type="working", order=i)
             
+        # 3. Bench Press Volume (3x5)
         t3 = WorkoutTemplate.objects.create(user=request.user, name="Bench Press Volume (3x5)", description="Triple working sets for upper body pushing power.")
         for i in range(3):
             WorkoutTemplateExercise.objects.create(template=t3, exercise="BENCH", weight=working_weights['bench'], reps=5, set_type="working", order=i)
-        
-        templates = WorkoutTemplate.objects.filter(user=request.user)
+
+        # 4. Wendler 5/3/1 (5s Week)
+        t4 = WorkoutTemplate.objects.create(user=request.user, name="Wendler 5/3/1 (5s Week)", description="Legendary long-term strength progression cycle at 65%, 75%, and 85%.")
+        sq_1rm = profile.squat_1rm
+        bp_1rm = profile.bench_1rm
+        # Squat sets
+        WorkoutTemplateExercise.objects.create(template=t4, exercise="SQUAT", weight=round((sq_1rm * 0.65) / 5) * 5, reps=5, set_type="working", order=0)
+        WorkoutTemplateExercise.objects.create(template=t4, exercise="SQUAT", weight=round((sq_1rm * 0.75) / 5) * 5, reps=5, set_type="working", order=1)
+        WorkoutTemplateExercise.objects.create(template=t4, exercise="SQUAT", weight=round((sq_1rm * 0.85) / 5) * 5, reps=5, set_type="working", order=2)
+        # Bench sets
+        WorkoutTemplateExercise.objects.create(template=t4, exercise="BENCH", weight=round((bp_1rm * 0.65) / 5) * 5, reps=5, set_type="working", order=3)
+        WorkoutTemplateExercise.objects.create(template=t4, exercise="BENCH", weight=round((bp_1rm * 0.75) / 5) * 5, reps=5, set_type="working", order=4)
+        WorkoutTemplateExercise.objects.create(template=t4, exercise="BENCH", weight=round((bp_1rm * 0.85) / 5) * 5, reps=5, set_type="working", order=5)
+
+        # 5. Texas Method (Volume Day)
+        t5 = WorkoutTemplate.objects.create(user=request.user, name="Texas Method Volume Day", description="Intermediate weekly progression volume: 5x5 Squat and Bench @ 75%.")
+        w75_sq = round((sq_1rm * 0.75) / 5) * 5
+        w75_bp = round((bp_1rm * 0.75) / 5) * 5
+        for i in range(5):
+            WorkoutTemplateExercise.objects.create(template=t5, exercise="SQUAT", weight=w75_sq, reps=5, set_type="working", order=i)
+        for i in range(5):
+            WorkoutTemplateExercise.objects.create(template=t5, exercise="BENCH", weight=w75_bp, reps=5, set_type="working", order=i + 5)
+
+        # 6. Smolov Jr. (6x6 Squat)
+        t6 = WorkoutTemplate.objects.create(user=request.user, name="Smolov Jr. (6x6 Squat)", description="High-intensity, high-volume squat acclimation day: 6x6 @ 70% 1RM.")
+        w70_sq = round((sq_1rm * 0.70) / 5) * 5
+        for i in range(6):
+            WorkoutTemplateExercise.objects.create(template=t6, exercise="SQUAT", weight=w70_sq, reps=6, set_type="working", order=i)
+
+        # 7. Deload and Recovery
+        t7 = WorkoutTemplate.objects.create(user=request.user, name="Deload & Active Recovery", description="Fatigue management cycle using light active recovery sets at 50% 1RM.")
+        dl_1rm = profile.deadlift_1rm
+        WorkoutTemplateExercise.objects.create(template=t7, exercise="SQUAT", weight=round((sq_1rm * 0.50) / 5) * 5, reps=5, set_type="working", order=0)
+        WorkoutTemplateExercise.objects.create(template=t7, exercise="BENCH", weight=round((bp_1rm * 0.50) / 5) * 5, reps=5, set_type="working", order=1)
+        WorkoutTemplateExercise.objects.create(template=t7, exercise="DEADLIFT", weight=round((dl_1rm * 0.50) / 5) * 5, reps=5, set_type="working", order=2)
+
+    templates = WorkoutTemplate.objects.filter(user=request.user)
 
     # Fetch today's sets and order them newest-first to match your HTMX layout
     todays_sets = WorkoutSet.objects.filter(
