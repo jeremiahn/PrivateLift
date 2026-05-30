@@ -526,10 +526,13 @@
     let timeRemaining = 180;
     let totalTimerDuration = 180;
     let isTimerPaused = false;
+    const showRestTimerPreference = {% if request.user.lifterprofile.show_rest_timer %}true{% else %}false{% endif %};
     
     document.body.addEventListener('setLogged', () => {
-        // Automatically trigger 3 minutes countdown when a set is logged
-        startRestTimer(180);
+        // Automatically trigger 3 minutes countdown when a set is logged if preference is enabled
+        if (showRestTimerPreference) {
+            startRestTimer(180);
+        }
     });
     
     function startRestTimer(duration) {

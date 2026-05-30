@@ -27,6 +27,7 @@ class LifterProfile(models.Model):
     body_weight = models.DecimalField(max_digits=5, decimal_places=1, default=180.0, help_text="Current body weight in lbs")
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES, default='male', help_text="Gender identity for profile and relative strength scaling")
     formula_preference = models.CharField(max_length=15, choices=FORMULA_CHOICES, default='epley', help_text="Formula used to calculate estimated 1RM")
+    show_rest_timer = models.BooleanField(default=True, help_text="Automatically pop up the rest timer when a set is logged")
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

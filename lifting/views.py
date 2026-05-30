@@ -144,6 +144,7 @@ def profile_settings(request):
             if formula_val:
                 profile.formula_preference = formula_val
                 
+            profile.show_rest_timer = request.POST.get("show_rest_timer") == "on"
             profile.save()
             return redirect('dashboard')
         except (TypeError, ValueError):

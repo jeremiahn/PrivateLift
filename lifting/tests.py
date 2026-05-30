@@ -138,6 +138,32 @@ class ProfileSettingsViewTests(TestCase):
         self.assertEqual(self.profile.bench_1rm, 315)
         self.assertEqual(self.profile.deadlift_1rm, 500)
 
+    def test_profile_settings_toggle_rest_timer(self):
+        """Happy Path: User toggles the automated rest timer setting on and off."""
+        self.client.login(username='profile_user', password='password123')
+        url = reverse(self.url_name)
+        
+        # 1. Test turning it off (unchecked / not passed in POST)
+        response = self.client.post(url, data={
+            'squat': '405',
+            'bench': '315',
+            'deadlift': '500'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.profile.refresh_from_db()
+        self.assertFalse(self.profile.show_rest_timer)
+        
+        # 2. Test turning it on (checked / passed as 'on')
+        response = self.client.post(url, data={
+            'squat': '405',
+            'bench': '315',
+            'deadlift': '500',
+            'show_rest_timer': 'on'
+        })
+        self.assertEqual(response.status_code, 302)
+        self.profile.refresh_from_db()
+        self.assertTrue(self.profile.show_rest_timer)
+
     def test_profile_settings_invalid_data(self):
         """Sad Path: User bypasses the HTML form and submits text instead of numbers."""
         self.client.login(username='profile_user', password='password123')

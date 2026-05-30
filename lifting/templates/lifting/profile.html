@@ -110,6 +110,22 @@
                 </div>
             </div>
 
+            <!-- Rest Timer Settings Toggle -->
+            <div class="mt-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">
+                        Automated Rest Timer
+                    </label>
+                    <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">
+                        Show floating timer countdown banner automatically after logging a set
+                    </span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" name="show_rest_timer" id="show_rest_timer" class="sr-only peer" {% if profile.show_rest_timer %}checked{% endif %}>
+                    <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+
             <!-- Save Action -->
             <div class="pt-4 md:pt-6">
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 md:py-4 rounded-xl transition duration-300 shadow-xl shadow-blue-500/20 dark:shadow-blue-900/40 uppercase tracking-widest text-xs md:text-sm">
