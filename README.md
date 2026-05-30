@@ -1,4 +1,4 @@
-# PrivateLift 🏋️‍♂️
+# PrivateLift
 
 PrivateLift is a self-hosted, private Django web application designed for powerlifting tracking and programming. Built for absolute privacy, it leverages Docker, Tailscale, and Caddy to host your workouts on your own home Linux server, accessible anywhere in the world (including from the gym floor) without opening a single port to the public internet.
 
@@ -6,7 +6,7 @@ The application features a modern, mobile-friendly interface designed for fat-fi
 
 ---
 
-## ✨ Features
+## Features
 
 *   **Big Three Dashboard**: Track your Squat, Bench Press, and Deadlift maxes on a unified, high-contrast dashboard.
 *   **Visual Barbell Plate Calculator**: Click the plate icon next to programmed weights to trigger a beautiful modal breakdown. View a loaded barbell sleeve mockup with color-coded plates (45s, 25s, 10s, 5s, 2.5s) per side and a detailed numeric checklist.
@@ -21,7 +21,7 @@ The application features a modern, mobile-friendly interface designed for fat-fi
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 graph TD
@@ -44,11 +44,11 @@ graph TD
 ```
 
 For a comprehensive explanation of how this architecture was selected, the step-by-step phases of building the codebase, and detailed post-mortems of fascinating bugs (like the Port 666 blockade and the login signal race condition), please refer to the developer chronicle:
-👉 **[HOW_BUILT.md](file:///Users/jeremiah.nelson/Documents/privatelift/HOW_BUILT.md)**
+**[HOW_BUILT.md](file:///Users/jeremiah/Documents/privatelift/HOW_BUILT.md)**
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 *   [Docker & Docker Compose](https://docs.docker.com/get-docker/)
@@ -84,7 +84,7 @@ To run the local sandbox environment on your Mac without port conflicts (runs on
 
 ---
 
-## 🛠️ Deployment Checklist (Staging & Production)
+## Deployment Checklist (Staging & Production)
 
 To deploy to your home server while protecting environment-specific configurations:
 
@@ -105,7 +105,7 @@ Once configured, deploying is safe and completely automated:
 # 1. Check out master/production branch
 git checkout master
 
-# 2. Merge staging branch normally (protected configurations are shielded automatically!)
+# 2. Merge staging branch normally (protected configurations are shielded automatically)
 git merge staging -m "Merge latest staging features"
 
 # 3. Push it live to the server
@@ -114,7 +114,7 @@ git push production master
 
 ---
 
-## 🧪 Running Tests
+## Running Tests
 
 PrivateLift has a highly robust test matrix including view interactions, boundary limits, and security enforcement checks.
 

@@ -7,7 +7,32 @@ db.sqlite3
 # Ignore Python Cache (Keeps the repo clean)
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-# Local Development Overrides
+# Ignore Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local Development / Tooling Overrides
 docker-compose.override.yml
 Caddyfile.local
+.antigravitycli/
+*.bak
