@@ -4,11 +4,11 @@ This document provides a comprehensive, step-by-step developer history and archi
 
 ---
 
-## 🏗️ Architectural Overview & System Design
+## Architectural Overview & System Design
 
 PrivateLift is designed to run securely within a **Tailscale virtual private mesh network (Tailnet)**. This completely eliminates the need to expose ports on a home router (no public port forwarding), providing absolute privacy while making the app easily accessible at the gym from a phone.
 
-### 🌐 Network & Deployment Topology
+### Network & Deployment Topology
 
 ```mermaid
 graph TD
@@ -30,14 +30,14 @@ graph TD
     Gunicorn -- ORM Queries --> DB
 ```
 
-### ⚙️ Environment Configuration Strategy
+### Environment Configuration Strategy
 The application manages local sandbox development and production environments elegantly through Git attributes and Docker overrides:
 *   **Local Development (Mac Sandbox)**: Runs on port `8080` (HTTP) mapped to container port `80`, using `Caddyfile.local` (dumbed-down configuration) and `docker-compose.override.yml`. This keeps local git status clean and avoids macOS port `80` permission restrictions.
 *   **Production Environment (Server)**: Runs on ports `80` and `443` (with internal Tailscale TLS certificates), reverse proxying directly to Gunicorn on port `8000`.
 
 ---
 
-## 🛠️ Step-by-Step Build Phases
+## Step-by-Step Build Phases
 
 ### Phase 1: Tech Stack Selection & Base Setup
 The core requirements were simple: track the "Big Three" lifts (Squat, Bench Press, Deadlift), perform automated programming, and package it for seamless deployment.
@@ -56,7 +56,7 @@ The core requirements were simple: track the "Big Three" lifts (Squat, Bench Pre
 
 ---
 
-## 🕵️ The Debugging Chronicles: Fascinating Issues & Technical Solutions
+## The Debugging Chronicles: Fascinating Issues & Technical Solutions
 
 During development, several complex bugs and interesting environment issues arose. Below are their post-mortems and resolutions.
 
@@ -114,7 +114,7 @@ During development, several complex bugs and interesting environment issues aros
 
 ---
 
-## 🛡️ DevOps & Branch Management Strategy
+## DevOps & Branch Management Strategy
 
 Managing a staging environment and a production environment on the same Linux host can lead to massive merge conflicts. This section details how Git was customized to make deployment stress-free.
 
@@ -135,28 +135,108 @@ A custom git merge driver was configured on the Mac to automatically protect pro
     docker-compose.yml merge=ours
     ```
 3.  **How it works**:
-    During a merge, Git detects the `.gitattributes` directive. Instead of attempting to merge text or throwing a merge conflict, it silently keeps the target branch's copy of `Caddyfile` and `docker-compose.yml` completely untouched!
+    During a merge, Git detects the `.gitattributes` directive. Instead of attempting to merge text or throwing a merge conflict, it silently keeps the target branch's copy of `Caddyfile` and `docker-compose.yml` completely untouched.
 
 ---
 
-## 🧪 Comprehensive Test Suite & Security Auditing
+## Security Hardening & Repository Auditing
 
-A premium developer experience requires bulletproof tests. PrivateLift implements three tiers of tests:
+To secure the repository for sharing on GitHub, we executed a rigorous repository cleanup and security hardening phase:
 
-### 1. View & Interaction Tests (`LogSetViewTests`, `DashboardViewTests`, `AnalyticsViewTests`)
-*   Tests the dynamic HTMX response headers (`HX-Trigger: setLogged`).
-*   Verifies fallback mechanisms when invalid input (e.g. text instead of integers) is supplied.
-*   Ensures users cannot access others' metrics (cross-user data isolation checks).
+### 1. Untracking OS Clutter & Local Backups
+We removed pre-existing system and backup files from Git tracking:
+*   Removed `.DS_Store` (macOS folder configuration).
+*   Removed template backups (`base.html.bak` and `dashboard.html.bak`).
 
-### 2. Boundary & Extreme Value Tests (`BoundaryLimitTests`)
-*   Asserts proper validation on extreme inputs (e.g., negative weights, decimals in integer fields).
-*   Enforces input validation on the 1RM database models.
+### 2. Comprehensive Gitignore Protection
+We overhauled the local `.gitignore` to permanently exclude OS files, IDE profiles, virtual environments, tooling outputs, and backups:
+```plaintext
+# Environment files
+.env
+db.sqlite3
 
-### 3. Global Security Audit Tests (`GlobalSecurityTests`)
-*   Sweeps all views (`dashboard`, `analytics`, `profile_settings`, `export_data`) and strictly asserts that unauthorized anonymous users are met with a `302 Redirect` bouncing them back to the `/accounts/login/` page.
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+
+# OS-specific clutter
+.DS_Store
+Screenshot*
+```
+
+---
+
+## Advanced Metrics & Sports Science Mathematics
+
+We upgraded PrivateLift's strength engine to incorporate advanced mathematical scaling and multi-formula preferences:
+
+### 1. Multi-Formula 1RM Calculators
+Instead of relying strictly on Epley, users can select their preferred sports-science equation on the settings page:
+*   **Epley:** 
+    $$\text{1RM} = \text{Weight} \times \left(1 + \frac{\text{Reps}}{30}\right)$$
+*   **Brzycki (Ideal for low-rep ranges):** 
+    $$\text{1RM} = \frac{\text{Weight}}{1.0278 - (0.0278 \times \text{Reps})}$$
+*   **Lander:** 
+    $$\text{1RM} = \frac{100 \times \text{Weight}}{101.3 - (2.6712 \times \text{Reps})}$$
+
+### 2. Relative Strength Scaling (Wilks & DOTS Scoring)
+To normalize lifting performance across different weight classes, we added:
+*   **Metric Conversion:** Converts imperial inputs (body weight and total lifted) to metric standards.
+*   **DOTS Score:** Dynamically applies gendered coefficients against bodyweight.
+*   **Wilks Score:** Applies the standard 5th-degree polynomial coefficient.
+*   **Gender-Inclusive Math:** To provide dignity and mathematical equity, for users selecting **Non-Binary** or **Other**, the system automatically calculates the lifter's scores using both male and female equations and averages the results.
+
+---
+
+## Gym-Floor UX & Routine Templates
+
+We built premium features to automate workout logging and inter-set rest times:
+
+### 1. Automated Rest Timers
+*   **Trigger:** Listens to the HTMX `setLogged` event fired upon a successful set POST.
+*   **Visual Layout:** Renders a floating, glassmorphic progress stopwatch at the bottom right.
+*   **Features:** Provides adjusters (+1m / -1m), play/pause, reset, and visual pulsing indicators when the clock hits zero.
+
+### 2. Automated Warmup Wizard
+*   Calculates a step-by-step checklist based on your target program weight: barbell acclimation (45/135 lbs), nervous activation (55%), muscle preparation (77%), and final single primer (90%).
+*   Displays a checkable checklist modal, containing a plate calculator button next to each warmup set for rapid plate mapping.
+
+### 3. Routine Templates & Builder
+*   Allows users to load routine templates or save their current daily session as a new routine template.
+*   **Auto-Seeding:** If a user profile has no routines, the seeder dynamically populates seven popular templates customized to their exact current strength levels:
+    1.  *Powerlifting Big Three* (Squat, Bench, Deadlift working sets)
+    2.  *Squat Focus (3x5)*
+    3.  *Bench Press Volume (3x5)*
+    4.  *Wendler 5/3/1 (5s Week)* (Pyramid scaling at 65%, 75%, and 85%)
+    5.  *Texas Method Volume Day* (5x5 Squat and Bench @ 75%)
+    6.  *Smolov Jr. (6x6 Squat)* (Specialized volume at 70%)
+    7.  *Deload & Active Recovery* (Light active recovery at 50% 1RM)
+
+---
+
+## Comprehensive Test Suite & Security Auditing
+
+PrivateLift implements four tiers of tests:
+
+### 1. View & Interaction Tests
+*   `LogSetViewTests`: Verifies dynamic HTMX swaps and `HX-Trigger: setLogged` header dispatching.
+*   `DashboardViewTests`: Tests fallback metrics, percentage sliders, and fallback parameters.
+*   `AnalyticsViewTests`: Validates tonnage calculations and verifies warmup sets are excluded from totals.
+
+### 2. Routine Template Tests
+*   `RoutineTemplateTests`: Validates auto-seeding of the 7 templates on dashboard access, confirms template loads into today's sets, and tests template saving.
+
+### 3. Boundary & Extreme Value Tests
+*   Asserts proper validation on extreme inputs (e.g., negative weights, decimals in integer fields, string injections).
+
+### 4. Global Security Audit Tests
+*   `GlobalSecurityTests`: Sweeps all primary URLs (including load, save, delete, and import endpoints) and strictly asserts that unauthorized anonymous users are redirected (302) to the `/accounts/login/` page.
 
 ### Running the Test Suite
-Tests can be executed in two environments:
 ```bash
 # Option A: The Virtual Environment Way (Native Mac)
 python manage.py test
@@ -164,16 +244,3 @@ python manage.py test
 # Option B: The Docker Compose Way
 docker compose exec web python manage.py test
 ```
-
----
-
-## 📈 Core Mathematical Formulas
-
-The application includes two key lift metrics:
-1.  **Epley Formula** (calculated automatically on set save):
-    $$\text{e1RM} = \text{weight} \times \left(1 + \frac{\text{reps}}{30}\right)$$
-2.  **Working Program Sets**:
-    Automatically rounds calculated percentages (e.g., 85% of 1RM) to the nearest $5\text{ lbs/kgs}$ for standard plate loading compatibility:
-    ```python
-    round((one_rep_max * percentage) / 5) * 5
-    ```
