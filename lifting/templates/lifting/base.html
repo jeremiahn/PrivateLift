@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,24 +21,28 @@
                 <p class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-semibold mt-0.5 uppercase tracking-wider hidden sm:block">Platform Performance Tracking</p>
             </div>
             
-            {% if request.user.is_authenticated %}
-            <nav class="hidden md:flex items-center gap-2">
+            <div class="flex items-center gap-3 md:gap-4">
+                {% if request.user.is_authenticated %}
+                <nav class="hidden md:flex items-center gap-2">
+                    
+                    <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-4 rounded-lg transition border border-blue-500 shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
+                        Dashboard
+                    </a>
+                    
+                    <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                        Stats
+                    </a>
+                    <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                        History
+                    </a>
+                    <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
+                        Settings
+                    </a>
+                </nav>
+                {% endif %}
                 
-                <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-black py-2.5 px-4 rounded-lg transition border border-blue-500 shadow-md shadow-blue-500/10 dark:shadow-blue-900/20">
-                    Dashboard
-                </a>
-                
-                <a href="{% url 'analytics' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                    Stats
-                </a>
-                <a href="{% url 'history' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                    History
-                </a>
-                <a href="{% url 'profile_settings' %}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white text-center text-xs font-bold py-2.5 px-4 rounded-lg transition border border-gray-200 dark:border-gray-600/50">
-                    Settings
-                </a>
-            </nav>
-            {% endif %}
+                <img src="{% static 'lifting/logo.png' %}" class="h-8 sm:h-9 md:h-12 w-auto object-contain rounded-md" alt="PrivateLift Logo">
+            </div>
         </header>
 
         {% block content %}{% endblock %}
