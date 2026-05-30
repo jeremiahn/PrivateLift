@@ -16,6 +16,8 @@ class LifterProfile(models.Model):
     GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
+        ('non_binary', 'Non-Binary'),
+        ('other', 'Other / Prefer Not to Say'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -23,7 +25,7 @@ class LifterProfile(models.Model):
     bench_1rm = models.IntegerField(default=0, help_text="Current Bench Max")
     deadlift_1rm = models.IntegerField(default=0, help_text="Current Deadlift Max")
     body_weight = models.DecimalField(max_digits=5, decimal_places=1, default=180.0, help_text="Current body weight in lbs")
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='male', help_text="Gender for relative strength scaling")
+    gender = models.CharField(max_length=15, choices=GENDER_CHOICES, default='male', help_text="Gender identity for profile and relative strength scaling")
     formula_preference = models.CharField(max_length=15, choices=FORMULA_CHOICES, default='epley', help_text="Formula used to calculate estimated 1RM")
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -47,7 +49,7 @@ class LifterProfile(models.Model):
     def get_dots_score(self):
         """
         Calculates the DOTS score (dynamic coefficient for relative strength).
-        Converts inputs to metric for standards validation.
+        Averages male and female coefficients for gender-diverse selections to ensure inclusion.
         """
         bw_kg = float(self.body_weight) * 0.45359237
         if bw_kg <= 0:
@@ -56,15 +58,19 @@ class LifterProfile(models.Model):
         total_lbs = self.squat_1rm + self.bench_1rm + self.deadlift_1rm
         total_kg = total_lbs * 0.45359237
         
-        if self.gender == 'female':
-            a, b, c, d, e, f = -0.0000010706, 0.0005158568, -0.1126651949, 13.6175032917, -579.2435372556, 11924.4568600108
-        else: # male
-            a, b, c, d, e, f = -0.0000010930, 0.0007395750, -0.1918759221, 27.0160078105, -1047.8830338318, 16618.3314375043
+        def calc_coeff(g):
+            if g == 'female':
+                a, b, c, d, e, f = -0.0000010706, 0.0005158568, -0.1126651949, 13.6175032917, -579.2435372556, 11924.4568600108
+            else: # male
+                a, b, c, d, e, f = -0.0000010930, 0.0007395750, -0.1918759221, 27.0160078105, -1047.8830338318, 16618.3314375043
+            denom = a*(bw_kg**5) + b*(bw_kg**4) + c*(bw_kg**3) + d*(bw_kg**2) + e*bw_kg + f
+            return 500.0 / denom if denom != 0 else 0.0
+
+        if self.gender in ['non_binary', 'other']:
+            coeff = (calc_coeff('male') + calc_coeff('female')) / 2.0
+        else:
+            coeff = calc_coeff(self.gender)
             
-        denom = a*(bw_kg**5) + b*(bw_kg**4) + c*(bw_kg**3) + d*(bw_kg**2) + e*bw_kg + f
-        if denom == 0:
-            return 0.0
-        coeff = 500.0 / denom
         return round(total_kg * coeff, 2)
 
     def get_wilks_score(self):
@@ -78,10 +84,20 @@ class LifterProfile(models.Model):
         total_lbs = self.squat_1rm + self.bench_1rm + self.deadlift_1rm
         total_kg = total_lbs * 0.45359237
         
-        if self.gender == 'female':
-            a, b, c, d, e, f = 594.3174777, -27.23842536, 0.8211222687, -0.00930733913, 0.00004731582, -0.00000009054
-        else: # male
-            a, b, c, d, e, f = -216.0475144, 16.2606339, -0.002388645, -0.00113732, 0.00000701863, -0.00000001291
+        def calc_coeff(g):
+            if g == 'female':
+                a, b, c, d, e, f = 594.3174777, -27.23842536, 0.8211222687, -0.00930733913, 0.00004731582, -0.00000009054
+            else: # male
+                a, b, c, d, e, f = -216.0475144, 16.2606339, -0.002388645, -0.00113732, 0.00000701863, -0.00000001291
+            denom = a + b*bw_kg + c*(bw_kg**2) + d*(bw_kg**3) + e*(bw_kg**4) + f*(bw_kg**5)
+            return 500.0 / denom if denom != 0 else 0.0
+
+        if self.gender in ['non_binary', 'other']:
+            coeff = (calc_coeff('male') + calc_coeff('female')) / 2.0
+        else:
+            coeff = calc_coeff(self.gender)
+            
+        return round(total_kg * coeff, 2)
             
         denom = a + b*bw_kg + c*(bw_kg**2) + d*(bw_kg**3) + e*(bw_kg**4) + f*(bw_kg**5)
         if denom == 0:
