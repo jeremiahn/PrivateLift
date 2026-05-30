@@ -10,7 +10,11 @@
             <p class="text-[10px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-1.5 leading-none">Volume and lifts accumulated</p>
         </div>
         <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 self-stretch sm:self-auto justify-between sm:justify-start">
-            <div class="text-left sm:text-right pr-2 border-r border-gray-200 dark:border-gray-800">
+            <div class="text-left sm:text-right pr-2 border-r border-gray-200 dark:border-gray-850">
+                <span class="text-[8px] uppercase font-black text-gray-400 dark:text-gray-500 block leading-none mb-1">Sessions</span>
+                <span class="text-xs md:text-sm font-black text-blue-500 dark:text-blue-400 block leading-none">{{ total_sessions }}</span>
+            </div>
+            <div class="text-left sm:text-right pr-2 border-r border-gray-200 dark:border-gray-850">
                 <span class="text-[8px] uppercase font-black text-gray-400 dark:text-gray-500 block leading-none mb-1">DOTS</span>
                 <span class="text-xs md:text-sm font-black text-indigo-500 dark:text-indigo-400 block leading-none">{{ profile.get_dots_score }}</span>
             </div>
@@ -23,46 +27,58 @@
     <div class="space-y-3 md:space-y-4">
         <!-- SQUAT -->
         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-red-500 flex justify-between items-center">
-            <div class="w-1/3 text-left">
+            <div class="w-1/4 text-left">
                 <h3 class="text-xs md:text-sm font-black text-red-500 uppercase tracking-wider">SQUAT</h3>
             </div>
-            <div class="w-1/3 text-center">
+            <div class="w-1/4 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
                 <p class="text-red-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ tonnage.SQUAT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div class="w-1/3 text-right">
+            <div class="w-1/4 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
                 <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ total_reps.SQUAT|default:0 }}</p>
+            </div>
+            <div class="w-1/4 text-right">
+                <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Peak e1RM</p>
+                <p class="text-amber-500 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ peak_e1rm.SQUAT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
         </div>
 
         <!-- BENCH -->
         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-blue-500 flex justify-between items-center">
-            <div class="w-1/3 text-left">
+            <div class="w-1/4 text-left">
                 <h3 class="text-xs md:text-sm font-black text-blue-500 uppercase tracking-wider">BENCH</h3>
             </div>
-            <div class="w-1/3 text-center">
+            <div class="w-1/4 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
                 <p class="text-blue-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ tonnage.BENCH|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div class="w-1/3 text-right">
+            <div class="w-1/4 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
                 <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ total_reps.BENCH|default:0 }}</p>
+            </div>
+            <div class="w-1/4 text-right">
+                <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Peak e1RM</p>
+                <p class="text-amber-500 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ peak_e1rm.BENCH|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
         </div>
 
         <!-- DEADLIFT -->
         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-green-500 flex justify-between items-center">
-            <div class="w-1/3 text-left">
+            <div class="w-1/4 text-left">
                 <h3 class="text-xs md:text-sm font-black text-green-500 uppercase tracking-wider">DEADLIFT</h3>
             </div>
-            <div class="w-1/3 text-center">
+            <div class="w-1/4 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Volume</p>
                 <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ tonnage.DEADLIFT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
-            <div class="w-1/3 text-right">
+            <div class="w-1/4 text-center">
                 <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Reps</p>
                 <p class="text-green-400 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ total_reps.DEADLIFT|default:0 }}</p>
+            </div>
+            <div class="w-1/4 text-right">
+                <p class="text-[8px] md:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider leading-none mb-0.5 md:mb-1">Peak e1RM</p>
+                <p class="text-amber-500 font-black text-xs md:text-lg leading-none whitespace-nowrap">{{ peak_e1rm.DEADLIFT|default:0 }} <span class="text-[8px] md:text-xs text-gray-500 font-bold">lbs</span></p>
             </div>
         </div>
     </div>

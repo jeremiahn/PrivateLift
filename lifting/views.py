@@ -409,11 +409,25 @@ def analytics(request):
             tonnage[exercise_key] += (workout_set.weight * workout_set.reps)
             lifetime_reps[exercise_key] += workout_set.reps
 
+    # 5. Peak Estimated 1RM (e1RM) per exercise
+    peak_e1rm = {
+        ex: WorkoutSet.objects.filter(
+            session__user=request.user, 
+            exercise=ex
+        ).exclude(set_type='warmup').aggregate(Max('e1rm'))['e1rm__max'] or 0
+        for ex in exercises
+    }
+
+    # 6. Total Sessions Completed
+    total_sessions = WorkoutSession.objects.filter(user=request.user).count()
+
     context = {
         'tonnage': tonnage, 
         'total_reps': lifetime_reps,
         'weekly_breakdown': weekly_breakdown,
         'profile': request.user.lifterprofile,
+        'peak_e1rm': peak_e1rm,
+        'total_sessions': total_sessions,
     }
     return render(request, 'lifting/analytics.html', context)
 

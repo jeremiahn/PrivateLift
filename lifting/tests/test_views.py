@@ -78,6 +78,14 @@ class AnalyticsViewTests(TestCase):
         self.assertEqual(tonnage.get('DEADLIFT', 0), 0)
         self.assertEqual(total_reps.get('DEADLIFT', 0), 0)
 
+        # Assert peak_e1rm and total_sessions
+        peak_e1rm = response.context['peak_e1rm']
+        total_sessions = response.context['total_sessions']
+        self.assertEqual(total_sessions, 1)
+        self.assertEqual(peak_e1rm.get('SQUAT', 0), 368)
+        self.assertEqual(peak_e1rm.get('BENCH', 0), 262)
+        self.assertEqual(peak_e1rm.get('DEADLIFT', 0), 0)
+
     def test_analytics_empty_state(self):
         """Sad Path: A brand new user with zero sets loads the page without crashing."""
         self.client.login(username='stats_user', password='password123')
