@@ -28,6 +28,7 @@ class LifterProfile(models.Model):
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES, default='male', help_text="Gender identity for profile and relative strength scaling")
     formula_preference = models.CharField(max_length=15, choices=FORMULA_CHOICES, default='epley', help_text="Formula used to calculate estimated 1RM")
     show_rest_timer = models.BooleanField(default=True, help_text="Automatically pop up the rest timer when a set is logged")
+    weight_unit = models.CharField(max_length=5, choices=[('lbs', 'Lbs'), ('kg', 'Kg')], default='lbs', help_text="Preferred weight unit across the application")
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

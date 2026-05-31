@@ -28,7 +28,7 @@
     <div class="flex gap-4 items-center">
         <div class="text-center">
             <span class="text-base md:text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.weight }}</span>
-            <span class="text-[8px] text-gray-400 font-bold uppercase">lbs</span>
+            <span class="text-[8px] text-gray-400 font-bold uppercase">{{ request.user.lifterprofile.weight_unit|default:"lbs" }}</span>
         </div>
         <div class="text-center">
             <span class="text-base md:text-lg font-black text-gray-900 dark:text-white block leading-none">{{ set.reps }}</span>

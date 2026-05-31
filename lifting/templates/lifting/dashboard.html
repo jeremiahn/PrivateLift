@@ -93,7 +93,7 @@
                     <div class="flex items-center justify-between w-full">
                         <div class="flex items-baseline gap-0.5 md:gap-1">
                             <span class="text-base sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-none">{{ weight }}</span>
-                            <span class="text-[8px] md:text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-0.5 md:ml-1">lbs</span>
+                            <span class="text-[8px] md:text-xs text-gray-400 dark:text-gray-600 font-bold uppercase ml-0.5 md:ml-1">{{ request.user.lifterprofile.weight_unit|default:"lbs" }}</span>
                         </div>
                         <div class="flex items-center gap-1.5">
                             <!-- Warmup Wizard Button -->
@@ -273,8 +273,8 @@
             <!-- Summary Info -->
             <div class="grid grid-cols-2 gap-4 text-center">
                 <div class="bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800/80">
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-0.5">Barbell Weight</span>
-                    <span class="text-sm font-black text-gray-700 dark:text-gray-300">45 lbs</span>
+                    <span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-0.5">Barbell Weight</span>
+                    <span class="text-sm font-black text-gray-700 dark:text-gray-300" id="plateCalcBarbellWeight">45 lbs</span>
                 </div>
                 <div class="bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800/80">
                     <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-0.5">Weight Per Side</span>
@@ -379,6 +379,8 @@
 </div>
 
 <script>
+    const USER_WEIGHT_UNIT = "{{ request.user.lifterprofile.weight_unit|default:'lbs' }}";
+
     function openPlateCalculator(weight, exercise) {
         const modal = document.getElementById('plateCalcModal');
         const content = document.getElementById('plateCalcContent');
@@ -387,39 +389,63 @@
         const perSideLabel = document.getElementById('plateCalcPerSide');
         const platesSleeve = document.getElementById('visualPlatesSleeve');
         const plateList = document.getElementById('plateListContainer');
+        const barWeightLabel = document.getElementById('plateCalcBarbellWeight');
+        
+        const isKg = USER_WEIGHT_UNIT === 'kg';
+        const barbell = isKg ? 20 : 45;
+        const unitText = isKg ? 'kg' : 'lbs';
         
         // Formulate titles
         exLabel.innerText = exercise.toUpperCase();
-        weightLabel.innerText = `${weight} lbs`;
+        weightLabel.innerText = `${weight} ${unitText}`;
+        if (barWeightLabel) {
+            barWeightLabel.innerText = `${barbell} ${unitText}`;
+        }
         
         // Calculations
         const calc = calculatePlates(weight);
         if (calc.error) {
-            perSideLabel.innerText = "0 lbs";
+            perSideLabel.innerText = `0 ${unitText}`;
             platesSleeve.innerHTML = `<span class="text-xs text-red-500 font-bold ml-4">${calc.error}</span>`;
             plateList.innerHTML = '';
             showModal();
             return;
         }
         
-        perSideLabel.innerText = `${calc.oneSideWeight} lbs`;
+        perSideLabel.innerText = `${calc.oneSideWeight} ${unitText}`;
         
         // Build Visual Plate Sleeve & List
         let sleeveHtml = '';
         let listHtml = '';
         
         if (calc.breakdown.length === 0) {
-            sleeveHtml = '<span class="text-xs text-gray-400 italic ml-4">Empty Barbell</span>';
-            listHtml = '<div class="text-center py-2 text-xs text-gray-400 italic">No additional plates needed. Load only the empty barbell.</div>';
+            sleeveHtml = `<span class="text-xs text-gray-400 italic ml-4">Empty Barbell (${barbell} ${unitText})</span>`;
+            listHtml = `<div class="text-center py-2 text-xs text-gray-400 italic">No additional plates needed. Load only the empty barbell.</div>`;
         } else {
-            const heightMap = {
+            const heightMap = isKg ? {
+                25: 'h-24',
+                20: 'h-22',
+                15: 'h-20',
+                10: 'h-16',
+                5: 'h-12',
+                2.5: 'h-10',
+                1.25: 'h-8'
+            } : {
                 45: 'h-24',
                 25: 'h-20',
                 10: 'h-16',
                 5: 'h-12',
                 2.5: 'h-8'
             };
-            const widthMap = {
+            const widthMap = isKg ? {
+                25: 'w-6 md:w-7',
+                20: 'w-5.5 md:w-6.5',
+                15: 'w-5 md:w-6',
+                10: 'w-4 md:w-5',
+                5: 'w-4',
+                2.5: 'w-3.5',
+                1.25: 'w-3'
+            } : {
                 45: 'w-6 md:w-7',
                 25: 'w-5 md:w-6',
                 10: 'w-4 md:w-5',
@@ -436,7 +462,7 @@
                     sleeveHtml += `
                         <div class="${heightClass} ${widthClass} ${plate.color} rounded-sm shadow-md border-y border-opacity-30 flex items-center justify-center shrink-0 hover:scale-105 transition-transform duration-200 cursor-help" 
                              title="${plate.name}">
-                            <span class="text-[6px] md:text-[8px] font-black tracking-tighter leading-none pointer-events-none select-none">${plate.weight}</span>
+                            <span class="text-[8px] md:text-[10px] font-black tracking-tighter leading-none pointer-events-none select-none">${plate.weight}</span>
                         </div>
                     `;
                 }
@@ -455,8 +481,8 @@
             
             if (calc.remaining > 0) {
                 listHtml += `
-                    <div class="text-[10px] text-amber-500 font-bold uppercase text-center mt-2">
-                        Remainder: ${calc.remaining} lbs cannot be loaded with standard plates
+                    <div class="text-xs text-amber-500 font-bold uppercase text-center mt-2">
+                        Remainder: ${calc.remaining} ${unitText} cannot be loaded with standard plates
                     </div>
                 `;
             }
@@ -469,12 +495,23 @@
     }
     
     function calculatePlates(totalWeight) {
-        const barbell = 45;
+        const isKg = USER_WEIGHT_UNIT === 'kg';
+        const barbell = isKg ? 20 : 45;
+        const unitText = isKg ? 'kg' : 'lbs';
+        
         if (totalWeight < barbell) {
-            return { error: `Weight is less than empty barbell (45 lbs)` };
+            return { error: `Weight is less than empty barbell (${barbell} ${unitText})` };
         }
         let remaining = (totalWeight - barbell) / 2;
-        const plates = [
+        const plates = isKg ? [
+            { name: '25 kg Plate', weight: 25, color: 'bg-red-500 border-red-600 text-white' },
+            { name: '20 kg Plate', weight: 20, color: 'bg-blue-500 border-blue-600 text-white' },
+            { name: '15 kg Plate', weight: 15, color: 'bg-yellow-500 border-yellow-600 text-gray-900' },
+            { name: '10 kg Plate', weight: 10, color: 'bg-green-500 border-green-600 text-white' },
+            { name: '5 kg Plate', weight: 5, color: 'bg-white border-gray-400 text-gray-900' },
+            { name: '2.5 kg Plate', weight: 2.5, color: 'bg-gray-800 border-gray-950 text-white' },
+            { name: '1.25 kg Plate', weight: 1.25, color: 'bg-gray-400 border-gray-500 text-gray-900 dark:text-white' }
+        ] : [
             { name: '45 lbs Plate', weight: 45, color: 'bg-red-500 border-red-600 text-white' },
             { name: '25 lbs Plate', weight: 25, color: 'bg-blue-500 border-blue-600 text-white' },
             { name: '10 lbs Plate', weight: 10, color: 'bg-green-500 border-green-600 text-white' },
@@ -633,13 +670,17 @@
         
         exLabel.innerText = exercise.toUpperCase();
         
-        const emptyBar = workingWeight >= 135 ? 135 : 45;
+        const isKg = USER_WEIGHT_UNIT === 'kg';
+        const emptyBar = isKg ? (workingWeight >= 60 ? 60 : 20) : (workingWeight >= 135 ? 135 : 45);
         const w55 = Math.round((workingWeight * 0.55) / 5) * 5;
         const w77 = Math.round((workingWeight * 0.77) / 5) * 5;
         const w90 = Math.round((workingWeight * 0.90) / 5) * 5;
         
+        const pctLabel = emptyBar === (isKg ? 60 : 135) ? (isKg ? '60 kg' : '135 lbs') : (isKg ? '20 kg' : '45 lbs');
+        const unitText = isKg ? 'kg' : 'lbs';
+        
         const warmups = [
-            { name: 'Bar acclimation', weight: emptyBar, reps: 5, pct: emptyBar === 135 ? '135 lbs' : '45 lbs' },
+            { name: 'Bar acclimation', weight: emptyBar, reps: 5, pct: pctLabel },
             { name: 'Nervous activation', weight: w55, reps: 5, pct: '55%' },
             { name: 'Muscle preparation', weight: w77, reps: 3, pct: '77%' },
             { name: 'Final single primer', weight: w90, reps: 1, pct: '90%' }
@@ -652,8 +693,8 @@
                     <div class="flex items-center gap-2.5">
                         <input type="checkbox" class="h-4.5 w-4.5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 bg-white dark:bg-gray-850">
                         <div class="flex flex-col">
-                            <span class="text-xs font-black text-gray-700 dark:text-gray-200">${w.weight} lbs</span>
-                            <span class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">${w.reps} reps | ${w.name} (${w.pct})</span>
+                            <span class="text-xs font-black text-gray-700 dark:text-gray-200">${w.weight} ${unitText}</span>
+                            <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">${w.reps} reps | ${w.name} (${w.pct})</span>
                         </div>
                     </div>
                     <button onclick="closeWarmupWizard(); setTimeout(() => openPlateCalculator(${w.weight}, '${exercise}'), 300)" 
@@ -712,17 +753,21 @@
         if (!weightInput || !inlineContainer) return;
         
         const weight = parseFloat(weightInput.value);
-        if (!weightInput.value || isNaN(weight) || weight < 45) {
+        const isKg = USER_WEIGHT_UNIT === 'kg';
+        const barbell = isKg ? 20 : 45;
+        const unitText = isKg ? 'kg' : 'lbs';
+        
+        if (!weightInput.value || isNaN(weight) || weight < barbell) {
             inlineContainer.classList.add('hidden');
             return;
         }
         
         inlineContainer.classList.remove('hidden');
-        inlineWeightLabel.innerText = `${weight} lbs`;
+        inlineWeightLabel.innerText = `${weight} ${unitText}`;
         
         const calc = calculatePlates(weight);
         if (calc.error) {
-            inlineVisualPlates.innerHTML = `<span class="text-[10px] text-red-500 font-bold ml-2">${calc.error}</span>`;
+            inlineVisualPlates.innerHTML = `<span class="text-xs text-red-500 font-bold ml-2">${calc.error}</span>`;
             inlinePlateList.innerHTML = '';
             return;
         }
@@ -731,24 +776,48 @@
         let listHtml = '';
         
         if (calc.breakdown.length === 0) {
-            sleeveHtml = '<span class="text-[10px] text-gray-400 italic ml-2">Empty Barbell</span>';
-            listHtml = '<span class="text-[10px] text-gray-400 dark:text-gray-500 italic">Load only empty 45 lbs barbell.</span>';
+            sleeveHtml = `<span class="text-xs text-gray-400 italic ml-2">Empty Barbell (${barbell} ${unitText})</span>`;
+            listHtml = `<span class="text-xs text-gray-400 dark:text-gray-500 italic">Load only empty ${barbell} ${unitText} barbell.</span>`;
         } else {
-            const heightMap = {
+            const heightMap = isKg ? {
+                25: 'h-14',
+                20: 'h-13',
+                15: 'h-12',
+                10: 'h-10',
+                5: 'h-8',
+                2.5: 'h-7',
+                1.25: 'h-6'
+            } : {
                 45: 'h-14',
                 25: 'h-12',
                 10: 'h-10',
                 5: 'h-8',
                 2.5: 'h-6'
             };
-            const widthMap = {
+            const widthMap = isKg ? {
+                25: 'w-3.5',
+                20: 'w-3.2',
+                15: 'w-3',
+                10: 'w-2.5',
+                5: 'w-2',
+                2.5: 'w-1.8',
+                1.25: 'w-1.5'
+            } : {
                 45: 'w-3.5',
                 25: 'w-3',
                 10: 'w-2.5',
                 5: 'w-2',
                 2.5: 'w-1.5'
             };
-            const miniColorMap = {
+            const miniColorMap = isKg ? {
+                25: 'bg-red-500 border border-red-600',
+                20: 'bg-blue-500 border border-blue-600',
+                15: 'bg-yellow-500 border border-yellow-600',
+                10: 'bg-green-500 border border-green-600',
+                5: 'bg-white border border-gray-400',
+                2.5: 'bg-gray-800 border border-gray-950',
+                1.25: 'bg-gray-400 border border-gray-500'
+            } : {
                 45: 'bg-red-500 border border-red-600',
                 25: 'bg-blue-500 border border-blue-600',
                 10: 'bg-green-500 border border-green-600',
@@ -765,36 +834,38 @@
                 for (let i = 0; i < plate.count; i++) {
                     sleeveHtml += `
                         <div class="${heightClass} ${widthClass} ${miniColor} rounded-sm shadow-sm shrink-0 hover:scale-105 transition-transform duration-150 cursor-help" 
-                             title="${plate.name}: ${plate.weight} lbs">
+                             title="${plate.name}: ${plate.weight} ${unitText}">
                         </div>
                     `;
                 }
                 
                 // Add the plates to the numeric badges list
                 let badgeColor = '';
-                if (plate.weight === 45) {
+                if (plate.weight === 45 || plate.weight === 25) {
                     badgeColor = 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20';
-                } else if (plate.weight === 25) {
+                } else if (plate.weight === 25 || plate.weight === 20) {
                     badgeColor = 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20';
+                } else if (plate.weight === 15) {
+                    badgeColor = 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border border-yellow-500/20';
                 } else if (plate.weight === 10) {
                     badgeColor = 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20';
                 } else if (plate.weight === 5) {
-                    badgeColor = 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
+                    badgeColor = 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20';
                 } else {
                     badgeColor = 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border border-gray-500/20';
                 }
                 
                 listHtml += `
-                    <span class="${badgeColor} text-[10px] font-black px-2 py-0.5 rounded-lg flex items-center gap-1">
-                        ${plate.weight} lbs <span class="opacity-60">x</span>${plate.count}
+                    <span class="${badgeColor} text-xs font-black px-2 py-0.5 rounded-lg flex items-center gap-1">
+                        ${plate.weight} ${unitText} <span class="opacity-60">x</span>${plate.count}
                     </span>
                 `;
             });
             
             if (calc.remaining > 0) {
                 listHtml += `
-                    <span class="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[9px] font-bold px-2 py-0.5 rounded-lg">
-                        +${calc.remaining} lbs rem.
+                    <span class="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold px-2 py-0.5 rounded-lg">
+                        +${calc.remaining} ${unitText} rem.
                     </span>
                 `;
             }
