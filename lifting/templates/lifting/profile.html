@@ -25,7 +25,7 @@
                     <div class="relative">
                         <input type="number" name="squat" id="squat" value="{{ profile.squat_1rm }}" 
                                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-3 md:py-4 px-3 md:px-4 text-gray-900 dark:text-white font-black text-lg md:text-xl focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all outline-none">
-                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base">LBS</span>
+                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base benchmark-suffix">LBS</span>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                     <div class="relative">
                         <input type="number" name="bench" id="bench" value="{{ profile.bench_1rm }}" 
                                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-3 md:py-4 px-3 md:px-4 text-gray-900 dark:text-white font-black text-lg md:text-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none">
-                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base">LBS</span>
+                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base benchmark-suffix">LBS</span>
                     </div>
                 </div>
 
@@ -49,7 +49,7 @@
                     <div class="relative">
                         <input type="number" name="deadlift" id="deadlift" value="{{ profile.deadlift_1rm }}" 
                                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-3 md:py-4 px-3 md:px-4 text-gray-900 dark:text-white font-black text-lg md:text-xl focus:ring-2 focus:ring-green-600 focus:border-transparent transition-all outline-none">
-                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base">LBS</span>
+                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base benchmark-suffix">LBS</span>
                     </div>
                 </div>
 
@@ -64,7 +64,7 @@
                     <div class="relative">
                         <input type="number" name="body_weight" id="body_weight" step="0.1" value="{{ profile.body_weight|stringformat:".1f" }}" 
                                class="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg py-3 md:py-4 px-3 md:px-4 text-gray-900 dark:text-white font-black text-lg md:text-xl focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none">
-                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base">LBS</span>
+                        <span class="absolute right-4 top-3 md:top-4 text-gray-400 dark:text-gray-600 font-bold text-sm md:text-base benchmark-suffix">LBS</span>
                     </div>
                 </div>
 
@@ -97,6 +97,33 @@
                 <div class="pt-4 md:pt-6">
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 md:py-4 rounded-xl transition duration-300 shadow-xl shadow-blue-500/20 dark:shadow-blue-900/40 uppercase tracking-widest text-xs md:text-sm">
                         Save Profile Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Measurement Preferences -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 lg:p-8 shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
+            <h3 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-2 border-b border-gray-100 dark:border-gray-700 pb-2">Measurement Settings</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-[10px] md:text-xs mb-4">Select your preferred system of units for tracking lifts and calculating plates.</p>
+            <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">
+                        Weight Unit Preference
+                    </label>
+                    <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">
+                        Toggle between Pounds (lbs) and Kilograms (kg) across all features
+                    </span>
+                </div>
+                
+                <!-- Sleek Lbs/Kg Toggle Button Switch -->
+                <div class="flex items-center bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 shrink-0">
+                    <input type="hidden" name="weight_unit" id="weight_unit_input" value="{{ profile.weight_unit|default:'lbs' }}">
+                    <button type="button" id="unit-lbs-btn" onclick="setWeightUnit('lbs')" class="px-3.5 py-1.5 rounded-md text-xs font-black transition flex items-center gap-1">
+                        LBS
+                    </button>
+                    <button type="button" id="unit-kg-btn" onclick="setWeightUnit('kg')" class="px-3.5 py-1.5 rounded-md text-xs font-black transition flex items-center gap-1">
+                        KG
                     </button>
                 </div>
             </div>
@@ -257,5 +284,42 @@
 
     // Run immediately on script execution to prevent lag
     updateThemeButtons();
+
+    // --- WEIGHT UNIT PREFERENCE TOGGLER ---
+    function setWeightUnit(unit) {
+        const input = document.getElementById('weight_unit_input');
+        const lbsBtn = document.getElementById('unit-lbs-btn');
+        const kgBtn = document.getElementById('unit-kg-btn');
+        
+        if (!input || !lbsBtn || !kgBtn) return;
+        
+        input.value = unit;
+        
+        const activeClasses = ['bg-blue-600', 'text-white', 'shadow-sm'];
+        const inactiveClasses = ['text-gray-500', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white'];
+        
+        if (unit === 'lbs') {
+            lbsBtn.classList.add(...activeClasses);
+            lbsBtn.classList.remove(...inactiveClasses);
+            kgBtn.classList.remove(...activeClasses);
+            kgBtn.classList.add(...inactiveClasses);
+        } else {
+            lbsBtn.classList.remove(...activeClasses);
+            lbsBtn.classList.add(...inactiveClasses);
+            kgBtn.classList.add(...activeClasses);
+            kgBtn.classList.remove(...inactiveClasses);
+        }
+        
+        // Update benchmark input visual suffixes
+        const suffixes = document.querySelectorAll('.benchmark-suffix');
+        suffixes.forEach(suffix => {
+            suffix.innerText = unit.toUpperCase();
+        });
+    }
+
+    // Initialize unit settings on load
+    document.addEventListener('DOMContentLoaded', () => {
+        setWeightUnit('{{ profile.weight_unit|default:"lbs" }}');
+    });
 </script>
 {% endblock %}
