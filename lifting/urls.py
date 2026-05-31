@@ -12,6 +12,7 @@ urlpatterns = [
     path('analytics/', views.analytics, name='analytics'),
 
     path('delete-set/<int:set_id>/', views.delete_set, name='delete_set'),
+    path('delete-session/<int:session_id>/', views.delete_session, name='delete_session'),
     path('update-set-type/<int:set_id>/', views.update_set_type, name='update_set_type'),
 
     # Custom Routine Templates

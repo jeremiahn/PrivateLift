@@ -449,6 +449,18 @@ def delete_set(request, set_id):
 
 @login_required
 @require_POST
+def delete_session(request, session_id):
+    # Securely retrieve the session ensuring it belongs to the logged-in user
+    session = get_object_or_404(WorkoutSession, id=session_id, user=request.user)
+    
+    # Delete the session (cascade deletes all related WorkoutSets automatically)
+    session.delete()
+    
+    # Return empty response so HTMX can swap it out of the UI
+    return HttpResponse("")
+
+@login_required
+@require_POST
 def update_set_type(request, set_id):
     workout_set = get_object_or_404(WorkoutSet, id=set_id, session__user=request.user)
     new_type = request.POST.get('set_type')
