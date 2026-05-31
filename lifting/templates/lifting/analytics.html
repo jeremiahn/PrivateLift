@@ -26,7 +26,7 @@
     </div>
     <div class="space-y-3 md:space-y-4">
         <!-- SQUAT -->
-        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-red-500 flex justify-between items-center">
+        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-red-200 dark:border-red-900/30 border-l-4 border-l-red-500 flex justify-between items-center">
             <div class="w-1/4 text-left">
                 <h3 class="text-xs md:text-sm font-black text-red-500 uppercase tracking-wider">SQUAT</h3>
             </div>
@@ -45,7 +45,7 @@
         </div>
 
         <!-- BENCH -->
-        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-blue-500 flex justify-between items-center">
+        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-blue-200 dark:border-blue-900/30 border-l-4 border-l-blue-500 flex justify-between items-center">
             <div class="w-1/4 text-left">
                 <h3 class="text-xs md:text-sm font-black text-blue-500 uppercase tracking-wider">BENCH</h3>
             </div>
@@ -64,7 +64,7 @@
         </div>
 
         <!-- DEADLIFT -->
-        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-gray-200 dark:border-gray-700/50 border-l-4 border-green-500 flex justify-between items-center">
+        <div class="bg-gray-50 dark:bg-gray-900/50 p-4 md:p-6 rounded-xl border border-green-200 dark:border-green-900/30 border-l-4 border-l-green-500 flex justify-between items-center">
             <div class="w-1/4 text-left">
                 <h3 class="text-xs md:text-sm font-black text-green-500 uppercase tracking-wider">DEADLIFT</h3>
             </div>
@@ -100,7 +100,7 @@
             
             <div class="p-4 md:p-6 pt-0 border-t border-gray-200 dark:border-gray-700/50">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 border-l-4 border-red-500 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-red-200 dark:border-red-900/30 border-l-4 border-l-red-500 flex justify-between items-center">
                         <div>
                             <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block">Squat Volume</span>
                             <span class="text-red-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.SQUAT.tonnage|default:0 }} lbs</span>
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                     
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 border-l-4 border-blue-500 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-blue-200 dark:border-blue-900/30 border-l-4 border-l-blue-500 flex justify-between items-center">
                         <div>
                             <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block">Bench Volume</span>
                             <span class="text-blue-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.BENCH.tonnage|default:0 }} lbs</span>
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                     
-                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 border-l-4 border-green-500 flex justify-between items-center">
+                    <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl border border-green-200 dark:border-green-900/30 border-l-4 border-l-green-500 flex justify-between items-center">
                         <div>
                             <span class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block">Deadlift Volume</span>
                             <span class="text-green-400 font-black text-base md:text-lg mt-0.5 block leading-none">{{ lifts.DEADLIFT.tonnage|default:0 }} lbs</span>
