@@ -251,6 +251,69 @@ class DeleteSetViewTests(TestCase):
         self.assertTrue(WorkoutSet.objects.filter(id=self.set_a.id).exists())
 
 
+class DeleteSessionViewTests(TestCase):
+    def setUp(self):
+        self.user_a = User.objects.create_user(username='user_a', password='password123')
+        self.session_a = WorkoutSession.objects.create(user=self.user_a, date=date.today())
+        self.set_a = WorkoutSet.objects.create(
+            session=self.session_a, exercise='SQUAT', weight=315, reps=5, set_type='working'
+        )
+
+        self.user_b = User.objects.create_user(username='user_b', password='password123')
+        self.session_b = WorkoutSession.objects.create(user=self.user_b, date=date.today())
+        self.set_b = WorkoutSet.objects.create(
+            session=self.session_b, exercise='BENCH', weight=225, reps=5, set_type='working'
+        )
+
+        self.url_name = 'delete_session'
+
+    def test_delete_session_success(self):
+        """Happy Path: A user successfully deletes their own session (and all its sets) via POST."""
+        self.client.login(username='user_a', password='password123')
+        self.assertTrue(WorkoutSession.objects.filter(id=self.session_a.id).exists())
+        self.assertTrue(WorkoutSet.objects.filter(id=self.set_a.id).exists())
+        
+        url = reverse(self.url_name, args=[self.session_a.id])
+        response = self.client.post(url)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b"")
+        self.assertFalse(WorkoutSession.objects.filter(id=self.session_a.id).exists())
+        # Verify cascade deletion of sets
+        self.assertFalse(WorkoutSet.objects.filter(id=self.set_a.id).exists())
+
+    def test_delete_session_wrong_method(self):
+        """Method Check: The view must reject GET requests because of @require_POST."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[self.session_a.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 405)
+        self.assertTrue(WorkoutSession.objects.filter(id=self.session_a.id).exists())
+
+    def test_delete_session_cross_user_isolation(self):
+        """Security: User A tries to delete User B's session."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[self.session_b.id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(WorkoutSession.objects.filter(id=self.session_b.id).exists())
+
+    def test_delete_session_not_found(self):
+        """Sad Path: A user tries to delete a session ID that doesn't exist."""
+        self.client.login(username='user_a', password='password123')
+        url = reverse(self.url_name, args=[999])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_session_unauthenticated(self):
+        """Security: An anonymous user tries to delete a session."""
+        url = reverse(self.url_name, args=[self.session_a.id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login/'))
+        self.assertTrue(WorkoutSession.objects.filter(id=self.session_a.id).exists())
+
+
 class UpdateSetTypeTests(TestCase):
     def setUp(self):
         self.client = Client()
