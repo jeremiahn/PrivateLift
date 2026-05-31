@@ -20,6 +20,25 @@
         }
     </script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        /* Global base font size adjustments for enhanced mobile & desktop readability */
+        html {
+            font-size: 108% !important;
+        }
+        @media (max-width: 640px) {
+            html {
+                font-size: 114% !important;
+            }
+        }
+        
+        /* Elevate absolute small pixel text utility sizes for legibility */
+        .text-\[6px\] { font-size: 8.5px !important; }
+        .text-\[7px\] { font-size: 9.5px !important; }
+        .text-\[8px\] { font-size: 11px !important; }
+        .text-\[9px\] { font-size: 12px !important; }
+        .text-\[10px\] { font-size: 13px !important; }
+        .text-\[11px\] { font-size: 14px !important; }
+    </style>
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200 relative">
 
